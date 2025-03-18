@@ -13,7 +13,7 @@ import java.awt.event.MouseEvent;
 public class Main {
     public static void main(String[] args) {
         Canvas canvas = new Canvas(1200, 900, Color.black);
-        DrawingParams drawingParams = new DrawingParams(false, false, DrawingShape.circle);
+        DrawingParams drawingParams = new DrawingParams(false, false, DrawingShape.polygon);
 
         MouseAdapter mouseAdapter = new MouseAdapter() {
             @Override

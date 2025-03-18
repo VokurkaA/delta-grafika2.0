@@ -21,10 +21,6 @@ public class Circle implements Shape {
         this(a, new Point(a.getX(), a.getY()), Color.red);
     }
 
-    public Circle() {
-        this(new Point(0, 0), new Point(0, 0), Color.red);
-    }
-
     @Override
     public List<Point> points() {
         return points;

@@ -19,8 +19,8 @@ public class Line implements Shape {
         this(a, new Point(a.getX(), a.getY()), Color.red);
     }
 
-    public Line() {
-        this(new Point(0, 0), new Point(0, 0), Color.red);
+    public Line(Point a, Point b) {
+        this(a, b, Color.red);
     }
 
     public static Point alignPoint(Point a, Point b) {
@@ -36,8 +36,16 @@ public class Line implements Shape {
         return points.getFirst();
     }
 
+    public void setA(Point point) {
+        points.set(0, point);
+    }
+
     public Point getB() {
         return points.get(1);
+    }
+
+    public void setB(Point point) {
+        points.set(1, point);
     }
 
     public Color getColor() {

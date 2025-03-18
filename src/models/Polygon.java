@@ -19,11 +19,6 @@ public class Polygon implements Shape {
         this.color = Color.red;
     }
 
-
-    public Polygon() {
-        this(new ArrayList<Point>(), Color.red);
-    }
-
     public void addPoint(Point point) {
         points.add(point);
     }
@@ -61,7 +56,21 @@ public class Polygon implements Shape {
 
     @Override
     public void rasterize(Graphics g) {
-        // This would be where you implement custom polygon rasterization
-        // For now, we'll rely on the Canvas's paintComponent to draw it
+        int n = getPointCount();
+        if (n < 2) return;
+
+        Line l = new Line(points.get(0), points.get(1));
+
+        for (int i = 1; i < n; i++) {
+            l.setA(l.getB());
+            l.setB(points.get(i));
+            l.rasterize(g);
+        }
+
+        if (isFinished() && n > 2) {
+            l.setA(points.get(n - 1));
+            l.setB(points.get(0));
+            l.rasterize(g);
+        }
     }
 }
