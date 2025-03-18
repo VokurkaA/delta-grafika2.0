@@ -33,13 +33,20 @@ public class Canvas extends JFrame {
 
     public void addShape(Shape shape) {
         shapes.add(shape);
-        repaint();
     }
 
     public Shape getLastShape() {
+        if (shapes.isEmpty())
+            return null;
         return shapes.getLast();
     }
+
     public JPanel getDrawingPanel() {
         return panel;
+    }
+
+    public void clear() {
+        shapes.clear();
+        repaint();
     }
 }

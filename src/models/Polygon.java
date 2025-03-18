@@ -7,14 +7,21 @@ import java.util.List;
 public class Polygon implements Shape {
     private final List<Point> points = new ArrayList<>();
     private Color color;
-
-    public Polygon(Color color) {
-        this.color = color;
-    }
+    private boolean finished = false;
 
     public Polygon(List<Point> points, Color color) {
         this.color = color;
         this.points.addAll(points);
+    }
+
+    public Polygon(Point a) {
+        this.points.add(a);
+        this.color = Color.red;
+    }
+
+
+    public Polygon() {
+        this(new ArrayList<Point>(), Color.red);
     }
 
     public void addPoint(Point point) {
@@ -24,6 +31,16 @@ public class Polygon implements Shape {
     @Override
     public List<Point> points() {
         return points;
+    }
+
+    @Override
+    public boolean isFinished() {
+        return finished;
+    }
+
+    @Override
+    public void setFinished(boolean finished) {
+        this.finished = finished;
     }
 
     public Color getColor() {
