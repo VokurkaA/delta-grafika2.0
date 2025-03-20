@@ -5,18 +5,23 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Polygon implements Shape {
+    private static final int finishDistanceThreshold = 10;
     private final List<Point> points = new ArrayList<>();
     private Color color;
-    private boolean finished = false;
+    private boolean isDashed;
+    private boolean isFinished = false;
 
-    public Polygon(List<Point> points, Color color) {
+    public Polygon(List<Point> points, Color color, boolean isDashed) {
         this.color = color;
         this.points.addAll(points);
+        this.isDashed = isDashed;
     }
 
-    public Polygon(Point a) {
+    public Polygon(Point a, boolean isDashed) {
         this.points.add(a);
+        this.points.add(new Point(a.getX(), a.getY()));
         this.color = Color.red;
+        this.isDashed = isDashed;
     }
 
     public void addPoint(Point point) {
@@ -30,12 +35,38 @@ public class Polygon implements Shape {
 
     @Override
     public boolean isFinished() {
-        return finished;
+        return isFinished;
     }
 
     @Override
-    public void setFinished(boolean finished) {
-        this.finished = finished;
+    public void setIsFinished(boolean finished) {
+        this.isFinished = finished;
+    }
+
+    @Override
+    public boolean idDashed() {
+        return isDashed;
+    }
+
+    @Override
+    public void setISDashed(boolean isDashed) {
+        this.isDashed = isDashed;
+    }
+
+    @Override
+    public void leftClickAction(Point point, boolean alignLine) {
+        if (points.size() >= 3 && Math.abs(point.getX() - points.getFirst().getX()) < finishDistanceThreshold && Math.abs(point.getY() - points.getFirst().getY()) < finishDistanceThreshold) {
+            points.getLast().set(points.getFirst());
+            setIsFinished(true);
+        } else {
+            if (alignLine) {
+                Point lastFixedPoint = points.get(points.size() - 2);
+                points.getLast().set(Line.alignPoint(lastFixedPoint, point));
+            } else {
+                points.getLast().set(point);
+            }
+            points.add(new Point(point.getX(), point.getY()));
+        }
     }
 
     public Color getColor() {
@@ -59,17 +90,10 @@ public class Polygon implements Shape {
         int n = getPointCount();
         if (n < 2) return;
 
-        Line l = new Line(points.get(0), points.get(1));
+        g.setColor(color);
 
-        for (int i = 1; i < n; i++) {
-            l.setA(l.getB());
-            l.setB(points.get(i));
-            l.rasterize(g);
-        }
-
-        if (isFinished() && n > 2) {
-            l.setA(points.get(n - 1));
-            l.setB(points.get(0));
+        for (int i = 0; i < n - 1; i++) {
+            Line l = new Line(points.get(i), points.get(i + 1), color, isDashed);
             l.rasterize(g);
         }
     }

@@ -25,11 +25,11 @@ public class Point {
         this.y = y;
     }
 
-    public Point get(){
+    public Point get() {
         return this;
     }
 
-    public void set(Point point){
+    public void set(Point point) {
         this.x = point.getX();
         this.y = point.getY();
     }

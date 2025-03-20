@@ -8,17 +8,20 @@ public class Circle implements Shape {
     private final List<Point> points = new ArrayList<>();
     private final Color color;
     private float radius;
-    private boolean finished = false;
+    private boolean isDashed;
+    private boolean isFinished = false;
 
-    public Circle(Point a, Point b, Color color) {
+
+    public Circle(Point a, Point b, Color color, boolean isDashed) {
         points.add(a);
         points.add(b);
         this.color = color;
         this.radius = getRadius();
+        this.isDashed = isDashed;
     }
 
-    public Circle(Point a) {
-        this(a, new Point(a.getX(), a.getY()), Color.red);
+    public Circle(Point a, boolean isDashed) {
+        this(a, new Point(a.getX(), a.getY()), Color.red, isDashed);
     }
 
     @Override
@@ -28,12 +31,28 @@ public class Circle implements Shape {
 
     @Override
     public boolean isFinished() {
-        return finished;
+        return isFinished;
     }
 
     @Override
-    public void setFinished(boolean finished) {
-        this.finished = finished;
+    public void setIsFinished(boolean finished) {
+        this.isFinished = finished;
+    }
+
+    @Override
+    public void leftClickAction(Point point, boolean alignLine) {
+        this.points.getLast().set(point);
+        setIsFinished(true);
+    }
+
+    @Override
+    public boolean idDashed() {
+        return isDashed;
+    }
+
+    @Override
+    public void setISDashed(boolean isDashed) {
+        this.isDashed = isDashed;
     }
 
     public Color getColor() {
@@ -42,6 +61,11 @@ public class Circle implements Shape {
 
     @Override
     public void rasterize(Graphics g) {
+        if (isDashed) {
+            new DashedCircle(getCenter(), points.get(1), getColor()).rasterize(g);
+            return;
+        }
+
         radius = getRadius();
         int x = (int) radius;
         int y = 0;
@@ -86,7 +110,7 @@ public class Circle implements Shape {
         return points.getFirst();
     }
 
-    private float getRadius() {
+    protected float getRadius() {
         float dx = points.get(1).getX() - points.get(0).getX();
         float dy = points.get(1).getY() - points.get(0).getY();
         return (float) Math.sqrt(dx * dx + dy * dy);

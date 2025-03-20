@@ -7,20 +7,18 @@ import java.util.List;
 public class Line implements Shape {
     private final List<Point> points = new ArrayList<>();
     private final Color color;
-    private boolean finished = false;
+    private boolean isDashed;
+    private boolean isFinished = false;
 
-    public Line(Point a, Point b, Color color) {
+    public Line(Point a, Point b, Color color, boolean isDashed) {
         points.add(a);
         points.add(b);
         this.color = color;
+        this.isDashed = isDashed;
     }
 
-    public Line(Point a) {
-        this(a, new Point(a.getX(), a.getY()), Color.red);
-    }
-
-    public Line(Point a, Point b) {
-        this(a, b, Color.red);
+    public Line(Point a, boolean isDashed) {
+        this(a, new Point(a.getX(), a.getY()), Color.red, isDashed);
     }
 
     public static Point alignPoint(Point a, Point b) {
@@ -59,19 +57,39 @@ public class Line implements Shape {
 
     @Override
     public boolean isFinished() {
-        return finished;
+        return isFinished;
     }
 
     @Override
-    public void setFinished(boolean finished) {
-        this.finished = finished;
+    public void setIsFinished(boolean finished) {
+        this.isFinished = finished;
+    }
+
+    @Override
+    public boolean idDashed() {
+        return isDashed;
+    }
+
+    @Override
+    public void setISDashed(boolean isDashed) {
+        this.isDashed = isDashed;
+    }
+
+    @Override
+    public void leftClickAction(Point point, boolean alignLine) {
+        if (alignLine) this.setB(Line.alignPoint(getA(), point));
+        else this.setB(point);
+        setIsFinished(true);
     }
 
     @Override
     public void rasterize(Graphics g) {
+        if (isDashed) {
+            new DashedLine(getA(), getB(), getColor()).rasterize(g);
+            return;
+        }
         if (this.getA().equals(this.getB())) return;
 
-        g.setColor(color);
         g.setColor(color);
         int dx = getB().getX() - getA().getX();
         int dy = getB().getY() - getA().getY();
@@ -90,4 +108,27 @@ public class Line implements Shape {
             y += yIncr;
         }
     }
+
+//    @Override
+//    public void rasterize(Graphics g) {
+//        if (this.getA().equals(this.getB())) return;
+//
+//        g.setColor(color);
+//        int dx = getB().getX() - getA().getX();
+//        int dy = getB().getY() - getA().getY();
+//
+//        int step = Math.max(Math.abs(dx), Math.abs(dy));
+//
+//        float xIncr = (float) dx / step;
+//        float yIncr = (float) dy / step;
+//
+//        float x = getA().getX();
+//        float y = getA().getY();
+//
+//        for (int i = 0; i < step; i++) {
+//            g.fillRect(Math.round(x), Math.round(y), 1, 1);
+//            x += xIncr;
+//            y += yIncr;
+//        }
+//    }
 }

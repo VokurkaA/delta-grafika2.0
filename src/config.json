@@ -10,7 +10,7 @@
   },
   "drawing": {
     "default_line_color": "#ff0000",
-    "default_dash_length" : 10
+    "default_dash_length": 10
   },
   "tools": {
     "default_tool": "line"

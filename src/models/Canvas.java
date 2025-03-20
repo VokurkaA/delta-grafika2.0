@@ -36,9 +36,12 @@ public class Canvas extends JFrame {
     }
 
     public Shape getLastShape() {
-        if (shapes.isEmpty())
-            return null;
+        if (shapes.isEmpty()) return null;
         return shapes.getLast();
+    }
+
+    public void removeLastShape() {
+        if (!shapes.isEmpty()) this.shapes.removeLast();
     }
 
     public JPanel getDrawingPanel() {
