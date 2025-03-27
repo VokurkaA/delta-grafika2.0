@@ -9,6 +9,12 @@ public class Point {
         this.y = y;
     }
 
+    public static double getDistance(Point a, Point b) {
+        int dx = b.getX() - a.getX();
+        int dy = b.getY() - a.getY();
+        return Math.sqrt(dx * dx + dy * dy);
+    }
+
     public int getX() {
         return x;
     }

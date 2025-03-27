@@ -1,5 +1,8 @@
 package models;
 
+import rasterizers.DashedCircleRasterizer;
+import rasterizers.SimpleCircleRasterizer;
+
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -7,10 +10,9 @@ import java.util.List;
 public class Circle implements Shape {
     private final List<Point> points = new ArrayList<>();
     private final Color color;
-    private float radius;
+    private final double radius;
     private boolean isDashed;
     private boolean isFinished = false;
-
 
     public Circle(Point a, Point b, Color color, boolean isDashed) {
         points.add(a);
@@ -20,8 +22,28 @@ public class Circle implements Shape {
         this.isDashed = isDashed;
     }
 
+
     public Circle(Point a, boolean isDashed) {
         this(a, new Point(a.getX(), a.getY()), Color.red, isDashed);
+    }
+
+    @Override
+    public void rightClickAction(Point newPoint, DrawingParams drawingParams) {
+        if (!points.contains(drawingParams.movingParams.movingPoint)) return;
+
+        isDashed = drawingParams.dashedLine;
+        if (drawingParams.movingParams.movingPoint.equals(points.getFirst())) {
+            int dX = newPoint.getX() - points.getFirst().getX();
+            int dY = newPoint.getY() - points.getFirst().getY();
+
+            points.getFirst().set(newPoint);
+
+            Point radiusPoint = points.get(1);
+            radiusPoint.setX(radiusPoint.getX() + dX);
+            radiusPoint.setY(radiusPoint.getY() + dY);
+        } else {
+            points.set(1, newPoint);
+        }
     }
 
     @Override
@@ -61,58 +83,28 @@ public class Circle implements Shape {
 
     @Override
     public void rasterize(Graphics g) {
-        if (isDashed) {
-            new DashedCircle(getCenter(), points.get(1), getColor()).rasterize(g);
-            return;
-        }
+        if (isDashed) DashedCircleRasterizer.rasterize(g, this, color);
+        else SimpleCircleRasterizer.rasterize(g, this, color);
+    }
 
-        radius = getRadius();
-        int x = (int) radius;
-        int y = 0;
+    @Override
+    public Point getNearestPoint(Point point) {
+        double d = Point.getDistance(getCenter(), point);
+        if (d < radius / 2) return getCenter();
 
-        int centerX = getCenter().getX();
-        int centerY = getCenter().getY();
+        double dx = point.getX() - getCenter().getX();
+        double dy = point.getY() - getCenter().getY();
 
-        g.setColor(color);
-
-        g.fillRect(x + centerX, y + centerY, 1, 1);
-        if (radius > 0) {
-            g.fillRect(x + centerX, -y + centerY, 1, 1);
-            g.fillRect(y + centerX, x + centerY, 1, 1);
-            g.fillRect(-y + centerX, x + centerY, 1, 1);
-        }
-
-        int P = 1 - (int) radius;
-        while (x > y) {
-            y++;
-            if (P <= 0) P = P + 2 * y + 1;
-            else {
-                x--;
-                P = P + 2 * y - 2 * x + 1;
-            }
-            if (x < y) break;
-
-            g.fillRect(x + centerX, y + centerY, 1, 1);
-            g.fillRect(-x + centerX, y + centerY, 1, 1);
-            g.fillRect(x + centerX, -y + centerY, 1, 1);
-            g.fillRect(-x + centerX, -y + centerY, 1, 1);
-
-            if (x != y) {
-                g.fillRect(y + centerX, x + centerY, 1, 1);
-                g.fillRect(-y + centerX, x + centerY, 1, 1);
-                g.fillRect(y + centerX, -x + centerY, 1, 1);
-                g.fillRect(-y + centerX, -x + centerY, 1, 1);
-            }
-        }
+        points.get(1).setX((int) (getCenter().getX() + radius * (dx / d)));
+        points.get(1).setY((int) (getCenter().getY() + radius * (dy / d)));
+        return points.get(1);
     }
 
     public Point getCenter() {
         return points.getFirst();
     }
 
-    protected float getRadius() {
-        float dx = points.get(1).getX() - points.get(0).getX();
-        float dy = points.get(1).getY() - points.get(0).getY();
-        return (float) Math.sqrt(dx * dx + dy * dy);
+    protected double getRadius() {
+        return Point.getDistance(points.get(1), points.getFirst());
     }
 }

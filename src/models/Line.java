@@ -1,5 +1,8 @@
 package models;
 
+import rasterizers.DashedLineRasterizer;
+import rasterizers.SimpleLineRasterizer;
+
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -83,52 +86,34 @@ public class Line implements Shape {
     }
 
     @Override
-    public void rasterize(Graphics g) {
-        if (isDashed) {
-            new DashedLine(getA(), getB(), getColor()).rasterize(g);
-            return;
-        }
-        if (this.getA().equals(this.getB())) return;
+    public void rightClickAction(Point point, DrawingParams drawingParams) {
+        if (!points.contains(drawingParams.movingParams.movingPoint)) return;
 
-        g.setColor(color);
-        int dx = getB().getX() - getA().getX();
-        int dy = getB().getY() - getA().getY();
-
-        int step = Math.max(Math.abs(dx), Math.abs(dy));
-
-        float xIncr = (float) dx / step;
-        float yIncr = (float) dy / step;
-
-        float x = getA().getX();
-        float y = getA().getY();
-
-        for (int i = 0; i < step; i++) {
-            g.fillRect(Math.round(x), Math.round(y), 1, 1);
-            x += xIncr;
-            y += yIncr;
+        isDashed = drawingParams.dashedLine;
+        if (drawingParams.alignLine) {
+            if (drawingParams.movingParams.movingPoint == getA()) {
+                drawingParams.movingParams.movingPoint.set(Line.alignPoint(getB(), point));
+            } else {
+                drawingParams.movingParams.movingPoint.set(Line.alignPoint(getA(), point));
+            }
+        } else {
+            drawingParams.movingParams.movingPoint.set(point);
         }
     }
 
-//    @Override
-//    public void rasterize(Graphics g) {
-//        if (this.getA().equals(this.getB())) return;
-//
-//        g.setColor(color);
-//        int dx = getB().getX() - getA().getX();
-//        int dy = getB().getY() - getA().getY();
-//
-//        int step = Math.max(Math.abs(dx), Math.abs(dy));
-//
-//        float xIncr = (float) dx / step;
-//        float yIncr = (float) dy / step;
-//
-//        float x = getA().getX();
-//        float y = getA().getY();
-//
-//        for (int i = 0; i < step; i++) {
-//            g.fillRect(Math.round(x), Math.round(y), 1, 1);
-//            x += xIncr;
-//            y += yIncr;
-//        }
-//    }
+
+    @Override
+    public void rasterize(Graphics g) {
+        if (isDashed) DashedLineRasterizer.rasterize(g, this, color);
+        else SimpleLineRasterizer.rasterize(g, this, color);
+    }
+
+    @Override
+    public Point getNearestPoint(Point point) {
+        double da = Point.getDistance(getA(), point);
+        double db = Point.getDistance(getB(), point);
+
+        return da < db ? getA() : getB();
+    }
+
 }

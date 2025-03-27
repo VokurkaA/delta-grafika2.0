@@ -1,26 +1,23 @@
-package models;
+package rasterizers;
+
+import models.Circle;
+import models.Point;
 
 import java.awt.*;
 
-public class DashedCircle extends Circle {
-    public DashedCircle(Point a, Point b, Color color) {
-        super(a, b, color, true);
-    }
+public class DashedCircleRasterizer {
+    public static void rasterize(Graphics g, models.Shape shape, Color color) {
+        if (!(shape instanceof Circle circle)) return;
 
-    public DashedCircle(Point a) {
-        super(a, true);
-    }
-
-    @Override
-    public void rasterize(Graphics g) {
-        float radius = getRadius();
+        double radius = Point.getDistance(circle.points().get(1), circle.points().getFirst());
         int x = (int) radius;
         int y = 0;
 
-        int centerX = getCenter().getX();
-        int centerY = getCenter().getY();
+        int centerX = circle.getCenter().getX();
+        int centerY = circle.getCenter().getY();
 
-        g.setColor(getColor());
+        g.setColor(color);
+        g.fillRect(centerX, centerY, 1, 1);
 
         int P = 1 - (int) radius;
         int dashLength = 10;
@@ -58,5 +55,4 @@ public class DashedCircle extends Circle {
             }
         }
     }
-
 }

@@ -5,7 +5,7 @@ import enums.DrawingShape;
 import java.awt.*;
 import java.util.List;
 
-public interface Shape {
+public interface Shape extends Drawable {
     static Shape getShapeByEnum(DrawingShape drawingShape, Point startPoint, boolean isDashed) {
         switch (drawingShape) {
             case line -> {
@@ -23,6 +23,7 @@ public interface Shape {
         }
     }
 
+    @Override
     List<Point> points();
 
     boolean isFinished();
@@ -35,5 +36,9 @@ public interface Shape {
 
     void leftClickAction(Point point, boolean alignLine);
 
+    void rightClickAction(Point point, DrawingParams drawingParams);
+
     void rasterize(Graphics g);
+
+    Point getNearestPoint(Point point);
 }
