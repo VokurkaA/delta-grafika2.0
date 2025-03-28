@@ -6,6 +6,7 @@ import rasterizers.SimpleLineRasterizer;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class Line implements Shape {
     private final List<Point> points = new ArrayList<>();
@@ -87,20 +88,18 @@ public class Line implements Shape {
 
     @Override
     public void rightClickAction(Point point, DrawingParams drawingParams) {
-        if (!points.contains(drawingParams.movingParams.movingPoint)) return;
+        if (!this.equals(drawingParams.movingShape)) return;
 
         isDashed = drawingParams.dashedLine;
-        if (drawingParams.alignLine) {
-            if (drawingParams.movingParams.movingPoint == getA()) {
-                drawingParams.movingParams.movingPoint.set(Line.alignPoint(getB(), point));
-            } else {
-                drawingParams.movingParams.movingPoint.set(Line.alignPoint(getA(), point));
-            }
-        } else {
-            drawingParams.movingParams.movingPoint.set(point);
-        }
-    }
 
+        Point nearestPoint = (Point.getDistance(getA(), point) <= Point.getDistance(getB(), point)) ? getA() : getB();
+        Point targetPoint = point;
+        if (drawingParams.alignLine) {
+            targetPoint = Line.alignPoint(nearestPoint == getA() ? getB() : getA(), point);
+        }
+
+        nearestPoint.set(targetPoint);
+    }
 
     @Override
     public void rasterize(Graphics g) {
@@ -109,11 +108,14 @@ public class Line implements Shape {
     }
 
     @Override
-    public Point getNearestPoint(Point point) {
-        double da = Point.getDistance(getA(), point);
-        double db = Point.getDistance(getB(), point);
-
-        return da < db ? getA() : getB();
+    public double getNearestDistance(Point click) {
+        return Math.min(Point.getDistance(getA(), click), Point.getDistance(getB(), click));
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        Line line = (Line) o;
+        return isDashed == line.isDashed && isFinished == line.isFinished && Objects.equals(points, line.points) && Objects.equals(color, line.color);
+    }
 }

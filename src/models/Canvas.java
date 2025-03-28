@@ -31,40 +31,20 @@ public class Canvas extends JFrame {
         setVisible(true);
     }
 
-    public Point getNearestPoint(Point point) {
-        Point nearestPoint = null;
+    public Shape getNearestShape(Point click) {
+        Shape nearestShape = null;
         double minDistance = Double.MAX_VALUE;
+        int threshold = 25;
 
         for (Shape shape : shapes) {
-            Point candidate = shape.getNearestPoint(point);
-            if (candidate != null) {
-                double distance = Point.getDistance(point, candidate);
-                if (distance < minDistance) {
-                    minDistance = distance;
-                    nearestPoint = candidate;
-                }
-            }
-        }
-        if (minDistance > 25) return null;
-        return nearestPoint;
-    }
-
-    public Shape getShapeWithNearestPoint(Point point) {
-        Shape shapeWithNearestPoint = null;
-        double minDistance = Double.MAX_VALUE;
-
-        for (Shape shape : shapes) {
-            Point candidate = shape.getNearestPoint(point);
-            if (candidate != null) {
-                double distance = Point.getDistance(point, candidate);
-                if (distance < minDistance && distance < 25) {
-                    minDistance = distance;
-                    shapeWithNearestPoint = shape;
-                }
+            double distance = shape.getNearestDistance(click);
+            if (distance < minDistance && distance < threshold) {
+                minDistance = distance;
+                nearestShape = shape;
             }
         }
 
-        return shapeWithNearestPoint;
+        return nearestShape;
     }
 
     public void addShape(Shape shape) {

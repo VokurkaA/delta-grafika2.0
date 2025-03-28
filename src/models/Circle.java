@@ -6,6 +6,7 @@ import rasterizers.SimpleCircleRasterizer;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class Circle implements Shape {
     private final List<Point> points = new ArrayList<>();
@@ -28,21 +29,28 @@ public class Circle implements Shape {
     }
 
     @Override
-    public void rightClickAction(Point newPoint, DrawingParams drawingParams) {
-        if (!points.contains(drawingParams.movingParams.movingPoint)) return;
+    public void rightClickAction(Point point, DrawingParams drawingParams) {
+        if (!this.equals(drawingParams.movingShape)) return;
 
         isDashed = drawingParams.dashedLine;
-        if (drawingParams.movingParams.movingPoint.equals(points.getFirst())) {
-            int dX = newPoint.getX() - points.getFirst().getX();
-            int dY = newPoint.getY() - points.getFirst().getY();
 
-            points.getFirst().set(newPoint);
+        Point centerPoint = points.getFirst();
+        Point radiusPoint = points.get(1);
 
-            Point radiusPoint = points.get(1);
+        double centerDistanceSq = Point.getDistanceSquared(centerPoint, point);
+        double currentRadiusSq = Point.getDistanceSquared(centerPoint, radiusPoint);
+
+        if (centerDistanceSq <= currentRadiusSq) {
+            int dX = point.getX() - centerPoint.getX();
+            int dY = point.getY() - centerPoint.getY();
+
+            centerPoint.setX(centerPoint.getX() + dX);
+            centerPoint.setY(centerPoint.getY() + dY);
+
             radiusPoint.setX(radiusPoint.getX() + dX);
             radiusPoint.setY(radiusPoint.getY() + dY);
         } else {
-            points.set(1, newPoint);
+            radiusPoint.set(point);
         }
     }
 
@@ -88,17 +96,11 @@ public class Circle implements Shape {
     }
 
     @Override
-    public Point getNearestPoint(Point point) {
-        double d = Point.getDistance(getCenter(), point);
-        if (d < radius / 2) return getCenter();
-
-        double dx = point.getX() - getCenter().getX();
-        double dy = point.getY() - getCenter().getY();
-
-        points.get(1).setX((int) (getCenter().getX() + radius * (dx / d)));
-        points.get(1).setY((int) (getCenter().getY() + radius * (dy / d)));
-        return points.get(1);
+    public double getNearestDistance(Point click) {
+        double d = Point.getDistance(getCenter(), click);
+        return (d <= radius) ? d : (d - radius);
     }
+
 
     public Point getCenter() {
         return points.getFirst();
@@ -106,5 +108,12 @@ public class Circle implements Shape {
 
     protected double getRadius() {
         return Point.getDistance(points.get(1), points.getFirst());
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        Circle circle = (Circle) o;
+        return Double.compare(radius, circle.radius) == 0 && isDashed == circle.isDashed && isFinished == circle.isFinished && Objects.equals(points, circle.points) && Objects.equals(color, circle.color);
     }
 }

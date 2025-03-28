@@ -20,33 +20,37 @@ public class Main {
             @Override
             public void mousePressed(MouseEvent e) {
                 Point newPoint = new Point(e.getX(), e.getY());
+
                 if (SwingUtilities.isLeftMouseButton(e)) {
-                    if (drawingParams.movingParams.movingPoint != null) {
-                        drawingParams.movingParams.clear();
-                        return;
-                    }
-
-                    Shape shape = canvas.getLastShape();
-
-                    if (shape == null || shape.isFinished()) {
-                        canvas.addShape(Shape.getShapeByEnum(drawingParams.drawingShape, newPoint, drawingParams.dashedLine));
-                    } else {
-                        shape.leftClickAction(newPoint, drawingParams.alignLine);
-                    }
-                    canvas.repaint();
+                    handleLeftMousePress(canvas, newPoint, drawingParams);
                 } else if (SwingUtilities.isRightMouseButton(e)) {
-                    Shape shapeToMove = canvas.getShapeWithNearestPoint(newPoint);
-                    if (shapeToMove != null) {
-                        Point nearestPoint = shapeToMove.getNearestPoint(newPoint);
+                    handleRightMousePress(canvas, newPoint, drawingParams);
+                }
+            }
 
-                        if (drawingParams.movingParams.movingPoint == null) {
-                            drawingParams.movingParams.movingPoint = nearestPoint;
-                            drawingParams.movingParams.movingShape = shapeToMove;
-                            shapeToMove.rightClickAction(newPoint, drawingParams);
-                        } else {
-                            drawingParams.movingParams.clear();
-                        }
+            private void handleLeftMousePress(Canvas canvas, Point newPoint, DrawingParams drawingParams) {
+                if (drawingParams.movingShape != null) {
+                    drawingParams.movingShape = null;
+                    return;
+                }
+
+                Shape shape = canvas.getLastShape();
+                if (shape == null || shape.isFinished()) {
+                    canvas.addShape(Shape.getShapeByEnum(drawingParams.drawingShape, newPoint, drawingParams.dashedLine));
+                } else {
+                    shape.leftClickAction(newPoint, drawingParams.alignLine);
+                }
+                canvas.repaint();
+            }
+
+            private void handleRightMousePress(Canvas canvas, Point newPoint, DrawingParams drawingParams) {
+                if (drawingParams.movingShape == null) {
+                    Shape shapeToMove = canvas.getNearestShape(newPoint);
+                    if (shapeToMove != null) {
+                        shapeToMove.rightClickAction(newPoint, drawingParams);
                     }
+                } else {
+                    drawingParams.movingShape = null;
                 }
             }
 
@@ -55,8 +59,8 @@ public class Main {
                 Point newPoint = new Point(e.getX(), e.getY());
                 Shape latestShape = canvas.getLastShape();
 
-                if (drawingParams.movingParams.movingPoint != null && drawingParams.movingParams.movingShape != null) {
-                    drawingParams.movingParams.movingShape.rightClickAction(newPoint, drawingParams);
+                if (drawingParams.movingShape != null) {
+                    drawingParams.movingShape.rightClickAction(newPoint, drawingParams);
                 } else if (latestShape != null && !latestShape.isFinished()) {
                     if (drawingParams.alignLine && latestShape.points().size() >= 2) {
                         Point previousPoint = latestShape.points().get(latestShape.points().size() - 2);
@@ -69,47 +73,47 @@ public class Main {
         };
 
         KeyAdapter keyAdapter = new KeyAdapter() {
+
+            void changeDrawingShape(Canvas canvas, DrawingShape newShape) {
+                if (canvas.getLastShape() != null && !canvas.getLastShape().isFinished()) {
+                    canvas.removeLastShape();
+                    drawingParams.movingShape = null;
+                }
+                drawingParams.drawingShape = newShape;
+            }
+
+            void toggleDashedLine(Canvas canvas, boolean isDashed) {
+                if (canvas.getLastShape() != null && !canvas.getLastShape().isFinished()) {
+                    canvas.getLastShape().setISDashed(isDashed);
+                }
+                drawingParams.dashedLine = isDashed;
+            }
+
             @Override
             public void keyPressed(KeyEvent e) {
                 switch (e.getKeyCode()) {
-                    case KeyEvent.VK_CONTROL:
-                        if (canvas.getLastShape() != null && !canvas.getLastShape().isFinished()) {
-                            canvas.getLastShape().setISDashed(true);
-                        }
-                        drawingParams.dashedLine = true;
-                        break;
-                    case KeyEvent.VK_SHIFT:
-                        drawingParams.alignLine = true;
-                        break;
                     case KeyEvent.VK_C:
                         canvas.clear();
                         break;
                     case KeyEvent.VK_P:
-                        drawingParams.drawingShape = DrawingShape.polygon;
-                        if (canvas.getLastShape() != null && !canvas.getLastShape().isFinished()) {
-                            canvas.removeLastShape();
-                            drawingParams.movingParams.clear();
-                        }
+                        changeDrawingShape(canvas, DrawingShape.polygon);
                         break;
                     case KeyEvent.VK_L:
-                        drawingParams.drawingShape = DrawingShape.line;
-                        if (canvas.getLastShape() != null && !canvas.getLastShape().isFinished()) {
-                            canvas.removeLastShape();
-                            drawingParams.movingParams.clear();
-                        }
+                        changeDrawingShape(canvas, DrawingShape.line);
                         break;
                     case KeyEvent.VK_O:
-                        drawingParams.drawingShape = DrawingShape.circle;
-                        if (canvas.getLastShape() != null && !canvas.getLastShape().isFinished()) {
-                            canvas.removeLastShape();
-                            drawingParams.movingParams.clear();
-                        }
+                        changeDrawingShape(canvas, DrawingShape.circle);
+                        break;
+                    case KeyEvent.VK_SHIFT:
+                        drawingParams.alignLine = true;
+                        break;
+                    case KeyEvent.VK_CONTROL:
+                        toggleDashedLine(canvas, true);
                         break;
                     case KeyEvent.VK_ESCAPE:
-                        if (canvas.getLastShape() != null && !canvas.getLastShape().isFinished()) {
+                        if (canvas.getLastShape() != null && !canvas.getLastShape().isFinished())
                             canvas.removeLastShape();
-                        }
-                        drawingParams.movingParams.clear();
+                        drawingParams.movingShape = null;
                         break;
                 }
                 canvas.repaint();
@@ -119,10 +123,7 @@ public class Main {
             public void keyReleased(KeyEvent e) {
                 switch (e.getKeyCode()) {
                     case KeyEvent.VK_CONTROL:
-                        if (canvas.getLastShape() != null && !canvas.getLastShape().isFinished()) {
-                            canvas.getLastShape().setISDashed(false);
-                        }
-                        drawingParams.dashedLine = false;
+                        toggleDashedLine(canvas, false);
                         break;
                     case KeyEvent.VK_SHIFT:
                         drawingParams.alignLine = false;

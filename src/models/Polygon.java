@@ -3,6 +3,7 @@ package models;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class Polygon implements Shape {
     private static final int finishDistanceThreshold = 10;
@@ -71,37 +72,41 @@ public class Polygon implements Shape {
 
     @Override
     public void rightClickAction(Point point, DrawingParams drawingParams) {
-        if (!points.contains(drawingParams.movingParams.movingPoint)) return;
+        if (!this.equals(drawingParams.movingShape)) return;
 
         isDashed = drawingParams.dashedLine;
+        Point nearestPoint = points.getFirst();
+        double minDistance = Point.getDistance(nearestPoint, point);
 
-        int movingIndex = points.indexOf(drawingParams.movingParams.movingPoint);
+        for (Point p : points) {
+            double distance = Point.getDistance(p, point);
+            if (distance < minDistance) {
+                minDistance = distance;
+                nearestPoint = p;
+            }
+        }
 
-        if (movingIndex == points.size() - 1) {
-            if (drawingParams.alignLine) {
-                Point alignedPoint = Line.alignPoint(points.get(movingIndex - 1), point);
-                points.get(movingIndex).set(alignedPoint);
-                points.getFirst().set(alignedPoint);
-            } else {
-                points.get(movingIndex).set(point);
-                points.getFirst().set(point);
-            }
-        } else if (movingIndex == 0) {
-            if (drawingParams.alignLine) {
-                Point alignedPoint = Line.alignPoint(points.get(1), point);
-                points.getFirst().set(alignedPoint);
-                points.getLast().set(alignedPoint);
-            } else {
-                points.getFirst().set(point);
-                points.getLast().set(point);
-            }
+        Point targetPoint;
+        if (drawingParams.alignLine) {
+            int nearestIndex = points.indexOf(nearestPoint);
+
+            Point referencePoint;
+            if (nearestIndex == 0) referencePoint = points.get(1);
+            else if (nearestIndex == points.size() - 1) referencePoint = points.get(points.size() - 2);
+            else referencePoint = points.get(nearestIndex - 1);
+
+            targetPoint = Line.alignPoint(referencePoint, point);
         } else {
-            if (drawingParams.alignLine) {
-                Point previousPoint = points.get(movingIndex - 1);
-                points.get(movingIndex).set(Line.alignPoint(previousPoint, point));
-            } else {
-                points.get(movingIndex).set(point);
-            }
+            targetPoint = point;
+        }
+
+        nearestPoint.set(targetPoint);
+
+        int nearestIndex = points.indexOf(nearestPoint);
+        if (nearestIndex == 0) {
+            points.getLast().set(targetPoint);
+        } else if (nearestIndex == points.size() - 1) {
+            points.getFirst().set(targetPoint);
         }
     }
 
@@ -135,20 +140,25 @@ public class Polygon implements Shape {
     }
 
     @Override
-    public Point getNearestPoint(Point point) {
-        if (points.isEmpty()) return null;
+    public double getNearestDistance(Point click) {
+        if (points.isEmpty()) return Double.MAX_VALUE;
 
-        Point nearestPoint = points.getFirst();
-        double minDistance = Point.getDistance(point, nearestPoint);
-
+        double minDistance = Point.getDistance(click, points.getFirst());
         for (Point p : points) {
-            double distance = Point.getDistance(point, p);
+            double distance = Point.getDistance(click, p);
             if (distance < minDistance) {
                 minDistance = distance;
-                nearestPoint = p;
             }
         }
 
-        return nearestPoint;
+        return minDistance;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        Polygon polygon = (Polygon) o;
+        return isDashed == polygon.isDashed && isFinished == polygon.isFinished && Objects.equals(points, polygon.points) && Objects.equals(color, polygon.color);
+    }
+
 }

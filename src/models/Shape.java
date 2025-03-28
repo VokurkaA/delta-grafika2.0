@@ -40,5 +40,5 @@ public interface Shape extends Drawable {
 
     void rasterize(Graphics g);
 
-    Point getNearestPoint(Point point);
+    double getNearestDistance(Point click);
 }
