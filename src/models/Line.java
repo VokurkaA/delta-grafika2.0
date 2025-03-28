@@ -6,7 +6,6 @@ import rasterizers.SimpleLineRasterizer;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 public class Line implements Shape {
     private final List<Point> points = new ArrayList<>();
@@ -88,8 +87,6 @@ public class Line implements Shape {
 
     @Override
     public void rightClickAction(Point point, DrawingParams drawingParams) {
-        if (!this.equals(drawingParams.movingShape)) return;
-
         isDashed = drawingParams.dashedLine;
 
         Point nearestPoint = (Point.getDistance(getA(), point) <= Point.getDistance(getB(), point)) ? getA() : getB();
@@ -110,12 +107,5 @@ public class Line implements Shape {
     @Override
     public double getNearestDistance(Point click) {
         return Math.min(Point.getDistance(getA(), click), Point.getDistance(getB(), click));
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (o == null || getClass() != o.getClass()) return false;
-        Line line = (Line) o;
-        return isDashed == line.isDashed && isFinished == line.isFinished && Objects.equals(points, line.points) && Objects.equals(color, line.color);
     }
 }

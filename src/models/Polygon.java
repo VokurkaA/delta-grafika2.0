@@ -3,7 +3,6 @@ package models;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 public class Polygon implements Shape {
     private static final int finishDistanceThreshold = 10;
@@ -72,8 +71,6 @@ public class Polygon implements Shape {
 
     @Override
     public void rightClickAction(Point point, DrawingParams drawingParams) {
-        if (!this.equals(drawingParams.movingShape)) return;
-
         isDashed = drawingParams.dashedLine;
         Point nearestPoint = points.getFirst();
         double minDistance = Point.getDistance(nearestPoint, point);
@@ -153,12 +150,4 @@ public class Polygon implements Shape {
 
         return minDistance;
     }
-
-    @Override
-    public boolean equals(Object o) {
-        if (o == null || getClass() != o.getClass()) return false;
-        Polygon polygon = (Polygon) o;
-        return isDashed == polygon.isDashed && isFinished == polygon.isFinished && Objects.equals(points, polygon.points) && Objects.equals(color, polygon.color);
-    }
-
 }

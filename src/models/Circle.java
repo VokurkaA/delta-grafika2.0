@@ -6,7 +6,6 @@ import rasterizers.SimpleCircleRasterizer;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 public class Circle implements Shape {
     private final List<Point> points = new ArrayList<>();
@@ -30,8 +29,6 @@ public class Circle implements Shape {
 
     @Override
     public void rightClickAction(Point point, DrawingParams drawingParams) {
-        if (!this.equals(drawingParams.movingShape)) return;
-
         isDashed = drawingParams.dashedLine;
 
         Point centerPoint = points.getFirst();
@@ -108,12 +105,5 @@ public class Circle implements Shape {
 
     protected double getRadius() {
         return Point.getDistance(points.get(1), points.getFirst());
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (o == null || getClass() != o.getClass()) return false;
-        Circle circle = (Circle) o;
-        return Double.compare(radius, circle.radius) == 0 && isDashed == circle.isDashed && isFinished == circle.isFinished && Objects.equals(points, circle.points) && Objects.equals(color, circle.color);
     }
 }
