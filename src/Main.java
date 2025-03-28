@@ -47,6 +47,7 @@ public class Main {
                 if (drawingParams.movingShape == null) {
                     Shape shapeToMove = canvas.getNearestShape(newPoint);
                     if (shapeToMove != null) {
+                        drawingParams.movingShape = shapeToMove;
                         shapeToMove.rightClickAction(newPoint, drawingParams);
                     }
                 } else {

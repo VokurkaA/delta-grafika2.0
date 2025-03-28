@@ -10,7 +10,6 @@ import java.util.List;
 public class Circle implements Shape {
     private final List<Point> points = new ArrayList<>();
     private final Color color;
-    private final double radius;
     private boolean isDashed;
     private boolean isFinished = false;
 
@@ -18,7 +17,6 @@ public class Circle implements Shape {
         points.add(a);
         points.add(b);
         this.color = color;
-        this.radius = getRadius();
         this.isDashed = isDashed;
     }
 
@@ -82,10 +80,6 @@ public class Circle implements Shape {
         this.isDashed = isDashed;
     }
 
-    public Color getColor() {
-        return color;
-    }
-
     @Override
     public void rasterize(Graphics g) {
         if (isDashed) DashedCircleRasterizer.rasterize(g, this, color);
@@ -94,8 +88,11 @@ public class Circle implements Shape {
 
     @Override
     public double getNearestDistance(Point click) {
+        double radius = getRadius();
         double d = Point.getDistance(getCenter(), click);
-        return (d <= radius) ? d : (d - radius);
+
+//        return (d <= radius) ? d : (d - radius);
+        return (d <= radius / 2) ? d : Math.abs((d - radius));
     }
 
 
