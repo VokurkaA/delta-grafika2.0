@@ -26,7 +26,7 @@ public class Circle implements Shape {
     }
 
     @Override
-    public void rightClickAction(Point point, DrawingParams drawingParams) {
+    public void moveShape(Point point, DrawingParams drawingParams) {
         isDashed = drawingParams.dashedLine;
 
         Point centerPoint = points.getFirst();
@@ -65,13 +65,13 @@ public class Circle implements Shape {
     }
 
     @Override
-    public void leftClickAction(Point point, boolean alignLine) {
+    public void place(Point point, boolean doAlignLine) {
         this.points.getLast().set(point);
         setIsFinished(true);
     }
 
     @Override
-    public boolean idDashed() {
+    public boolean isDashed() {
         return isDashed;
     }
 

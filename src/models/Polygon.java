@@ -7,6 +7,7 @@ import java.util.List;
 public class Polygon implements Shape {
     private static final int finishDistanceThreshold = 10;
     private final List<Point> points = new ArrayList<>();
+    private int movePointIndex = -1;
     private Color color;
     private boolean isDashed;
     private boolean isFinished = false;
@@ -44,7 +45,7 @@ public class Polygon implements Shape {
     }
 
     @Override
-    public boolean idDashed() {
+    public boolean isDashed() {
         return isDashed;
     }
 
@@ -54,12 +55,12 @@ public class Polygon implements Shape {
     }
 
     @Override
-    public void leftClickAction(Point point, boolean alignLine) {
+    public void place(Point point, boolean doAlignLine) {
         if (points.size() >= 3 && Math.abs(point.getX() - points.getFirst().getX()) < finishDistanceThreshold && Math.abs(point.getY() - points.getFirst().getY()) < finishDistanceThreshold) {
             points.getLast().set(points.getFirst());
             setIsFinished(true);
         } else {
-            if (alignLine) {
+            if (doAlignLine) {
                 Point lastFixedPoint = points.get(points.size() - 2);
                 points.getLast().set(Line.alignPoint(lastFixedPoint, point));
             } else {
@@ -70,21 +71,35 @@ public class Polygon implements Shape {
     }
 
     @Override
-    public void rightClickAction(Point point, DrawingParams drawingParams) {
+    public void moveShape(Point click, DrawingParams drawingParams) {
         isDashed = drawingParams.dashedLine;
-        Point nearestPoint = points.getFirst();
-        double minDistance = Point.getDistance(nearestPoint, point);
+        Point nearestPoint = null;
+        if (movePointIndex >= 0 && movePointIndex < points.size() && Point.getDistance(click, points.get(movePointIndex)) <= finishDistanceThreshold) {
+            nearestPoint = points.get(movePointIndex);
+        } else {
+            if (!points.isEmpty()) {
+                nearestPoint = points.getFirst();
+                double minDistance = Point.getDistance(nearestPoint, click);
 
-        for (Point p : points) {
-            double distance = Point.getDistance(p, point);
-            if (distance < minDistance) {
-                minDistance = distance;
-                nearestPoint = p;
+                for (Point p : points) {
+                    double distance = Point.getDistance(p, click);
+                    if (distance < minDistance) {
+                        minDistance = distance;
+                        nearestPoint = p;
+                    }
+                }
+                if (nearestPoint != null) {
+                    movePointIndex = points.indexOf(nearestPoint);
+                }
             }
         }
 
+        if (nearestPoint == null) {
+            return;
+        }
+
         Point targetPoint;
-        if (drawingParams.alignLine) {
+        if (drawingParams.doAlignLine) {
             int nearestIndex = points.indexOf(nearestPoint);
 
             Point referencePoint;
@@ -92,18 +107,20 @@ public class Polygon implements Shape {
             else if (nearestIndex == points.size() - 1) referencePoint = points.get(points.size() - 2);
             else referencePoint = points.get(nearestIndex - 1);
 
-            targetPoint = Line.alignPoint(referencePoint, point);
+            targetPoint = Line.alignPoint(referencePoint, click);
         } else {
-            targetPoint = point;
+            targetPoint = click;
         }
 
         nearestPoint.set(targetPoint);
 
-        int nearestIndex = points.indexOf(nearestPoint);
-        if (nearestIndex == 0) {
-            points.getLast().set(targetPoint);
-        } else if (nearestIndex == points.size() - 1) {
-            points.getFirst().set(targetPoint);
+        if (isFinished) {
+            int nearestIndex = points.indexOf(nearestPoint);
+            if (nearestIndex == 0) {
+                points.getLast().set(targetPoint);
+            } else if (nearestIndex == points.size() - 1) {
+                points.getFirst().set(targetPoint);
+            }
         }
     }
 

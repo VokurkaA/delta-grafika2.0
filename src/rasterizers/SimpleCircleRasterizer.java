@@ -23,10 +23,16 @@ public class SimpleCircleRasterizer {
 
         g.fillRect(x + centerX, y + centerY, 1, 1);
         if (radius > 0) {
+            g.fillRect(x + centerX, y + centerY, 1, 1);
+            g.fillRect(-x + centerX, y + centerY, 1, 1);
             g.fillRect(x + centerX, -y + centerY, 1, 1);
+            g.fillRect(-x + centerX, -y + centerY, 1, 1);
             g.fillRect(y + centerX, x + centerY, 1, 1);
             g.fillRect(-y + centerX, x + centerY, 1, 1);
+            g.fillRect(y + centerX, -x + centerY, 1, 1);
+            g.fillRect(-y + centerX, -x + centerY, 1, 1);
         }
+
 
         int P = 1 - (int) radius;
         while (x > y) {

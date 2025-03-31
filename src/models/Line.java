@@ -69,7 +69,7 @@ public class Line implements Shape {
     }
 
     @Override
-    public boolean idDashed() {
+    public boolean isDashed() {
         return isDashed;
     }
 
@@ -79,19 +79,19 @@ public class Line implements Shape {
     }
 
     @Override
-    public void leftClickAction(Point point, boolean alignLine) {
-        if (alignLine) this.setB(Line.alignPoint(getA(), point));
+    public void place(Point point, boolean doAlignLine) {
+        if (doAlignLine) this.setB(Line.alignPoint(getA(), point));
         else this.setB(point);
         setIsFinished(true);
     }
 
     @Override
-    public void rightClickAction(Point point, DrawingParams drawingParams) {
+    public void moveShape(Point point, DrawingParams drawingParams) {
         isDashed = drawingParams.dashedLine;
 
         Point nearestPoint = (Point.getDistance(getA(), point) <= Point.getDistance(getB(), point)) ? getA() : getB();
         Point targetPoint = point;
-        if (drawingParams.alignLine) {
+        if (drawingParams.doAlignLine) {
             targetPoint = Line.alignPoint(nearestPoint == getA() ? getB() : getA(), point);
         }
 

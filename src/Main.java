@@ -14,18 +14,15 @@ import java.awt.event.MouseEvent;
 public class Main {
     public static void main(String[] args) {
         Canvas canvas = new Canvas(1440, 1080, Color.black);
-        DrawingParams drawingParams = new DrawingParams(false, false, DrawingShape.circle);
+        DrawingParams drawingParams = new DrawingParams(false, false, DrawingShape.polygon);
 
         MouseAdapter mouseAdapter = new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
                 Point newPoint = new Point(e.getX(), e.getY());
 
-                if (SwingUtilities.isLeftMouseButton(e)) {
-                    handleLeftMousePress(canvas, newPoint, drawingParams);
-                } else if (SwingUtilities.isRightMouseButton(e)) {
-                    handleRightMousePress(canvas, newPoint, drawingParams);
-                }
+                if (SwingUtilities.isLeftMouseButton(e)) handleLeftMousePress(canvas, newPoint, drawingParams);
+                else if (SwingUtilities.isRightMouseButton(e)) handleRightMousePress(canvas, newPoint, drawingParams);
             }
 
             private void handleLeftMousePress(Canvas canvas, Point newPoint, DrawingParams drawingParams) {
@@ -38,7 +35,7 @@ public class Main {
                 if (shape == null || shape.isFinished()) {
                     canvas.addShape(Shape.getShapeByEnum(drawingParams.drawingShape, newPoint, drawingParams.dashedLine));
                 } else {
-                    shape.leftClickAction(newPoint, drawingParams.alignLine);
+                    shape.place(newPoint, drawingParams.doAlignLine);
                 }
                 canvas.repaint();
             }
@@ -48,7 +45,7 @@ public class Main {
                     Shape shapeToMove = canvas.getNearestShape(newPoint);
                     if (shapeToMove != null) {
                         drawingParams.movingShape = shapeToMove;
-                        shapeToMove.rightClickAction(newPoint, drawingParams);
+                        shapeToMove.moveShape(newPoint, drawingParams);
                     }
                 } else {
                     drawingParams.movingShape = null;
@@ -61,9 +58,9 @@ public class Main {
                 Shape latestShape = canvas.getLastShape();
 
                 if (drawingParams.movingShape != null) {
-                    drawingParams.movingShape.rightClickAction(newPoint, drawingParams);
+                    drawingParams.movingShape.moveShape(newPoint, drawingParams);
                 } else if (latestShape != null && !latestShape.isFinished()) {
-                    if (drawingParams.alignLine && latestShape.points().size() >= 2) {
+                    if (drawingParams.doAlignLine && latestShape.points().size() >= 2) {
                         Point previousPoint = latestShape.points().get(latestShape.points().size() - 2);
                         newPoint = Line.alignPoint(previousPoint, newPoint);
                     }
@@ -106,7 +103,7 @@ public class Main {
                         changeDrawingShape(canvas, DrawingShape.circle);
                         break;
                     case KeyEvent.VK_SHIFT:
-                        drawingParams.alignLine = true;
+                        drawingParams.doAlignLine = true;
                         break;
                     case KeyEvent.VK_CONTROL:
                         toggleDashedLine(canvas, true);
@@ -127,7 +124,7 @@ public class Main {
                         toggleDashedLine(canvas, false);
                         break;
                     case KeyEvent.VK_SHIFT:
-                        drawingParams.alignLine = false;
+                        drawingParams.doAlignLine = false;
                         break;
                 }
                 canvas.repaint();
