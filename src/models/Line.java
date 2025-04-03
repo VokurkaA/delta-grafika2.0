@@ -86,7 +86,7 @@ public class Line implements Shape {
     }
 
     @Override
-    public void moveShape(Point point, DrawingParams drawingParams) {
+    public void move(Point point, DrawingParams drawingParams, boolean newPoint) {
         isDashed = drawingParams.dashedLine;
 
         Point nearestPoint = (Point.getDistance(getA(), point) <= Point.getDistance(getB(), point)) ? getA() : getB();

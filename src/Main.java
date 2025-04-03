@@ -45,7 +45,7 @@ public class Main {
                     Shape shapeToMove = canvas.getNearestShape(newPoint);
                     if (shapeToMove != null) {
                         drawingParams.movingShape = shapeToMove;
-                        shapeToMove.moveShape(newPoint, drawingParams);
+                        shapeToMove.move(newPoint, drawingParams, true);
                     }
                 } else {
                     drawingParams.movingShape = null;
@@ -58,7 +58,7 @@ public class Main {
                 Shape latestShape = canvas.getLastShape();
 
                 if (drawingParams.movingShape != null) {
-                    drawingParams.movingShape.moveShape(newPoint, drawingParams);
+                    drawingParams.movingShape.move(newPoint, drawingParams, false);
                 } else if (latestShape != null && !latestShape.isFinished()) {
                     if (drawingParams.doAlignLine && latestShape.points().size() >= 2) {
                         Point previousPoint = latestShape.points().get(latestShape.points().size() - 2);

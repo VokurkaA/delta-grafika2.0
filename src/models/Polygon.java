@@ -71,7 +71,7 @@ public class Polygon implements Shape {
     }
 
     @Override
-    public void moveShape(Point click, DrawingParams drawingParams) {
+    public void move(Point click, DrawingParams drawingParams, boolean newPoint) {
         isDashed = drawingParams.dashedLine;
         Point nearestPoint = null;
         if (movePointIndex >= 0 && movePointIndex < points.size() && Point.getDistance(click, points.get(movePointIndex)) <= finishDistanceThreshold) {

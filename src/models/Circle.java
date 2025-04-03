@@ -26,7 +26,7 @@ public class Circle implements Shape {
     }
 
     @Override
-    public void moveShape(Point point, DrawingParams drawingParams) {
+    public void move(Point point, DrawingParams drawingParams, boolean newPoint) {
         isDashed = drawingParams.dashedLine;
 
         Point centerPoint = points.getFirst();

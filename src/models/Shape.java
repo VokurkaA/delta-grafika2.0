@@ -28,15 +28,15 @@ public interface Shape extends Drawable {
 
     boolean isFinished();
 
-    void setIsFinished(boolean finished);
-
     boolean isDashed();
+
+    void setIsFinished(boolean finished);
 
     void setISDashed(boolean isDashed);
 
     void place(Point point, boolean doAlignLine);
 
-    void moveShape(Point point, DrawingParams drawingParams);
+    void move(Point point, DrawingParams drawingParams, boolean newPoint);
 
     void rasterize(Graphics g);
 
