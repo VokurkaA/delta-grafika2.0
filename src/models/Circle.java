@@ -4,15 +4,8 @@ import rasterizers.DashedCircleRasterizer;
 import rasterizers.SimpleCircleRasterizer;
 
 import java.awt.*;
-import java.util.ArrayList;
-import java.util.List;
 
-public class Circle implements Shape {
-    private final List<Point> points = new ArrayList<>();
-    private final Color color;
-    private boolean isDashed;
-    private boolean isFinished = false;
-
+public class Circle extends Shape {
     public Circle(Point a, Point b, Color color, boolean isDashed) {
         points.add(a);
         points.add(b);
@@ -20,64 +13,44 @@ public class Circle implements Shape {
         this.isDashed = isDashed;
     }
 
-
-    public Circle(Point a, boolean isDashed) {
-        this(a, new Point(a.getX(), a.getY()), Color.red, isDashed);
+    public Circle(Point a) {
+        this(a, new Point(a.getX(), a.getY()), Color.red, false);
     }
 
     @Override
-    public void move(Point point, DrawingParams drawingParams, boolean newPoint) {
+    public void move(Point click, DrawingParams drawingParams, boolean newPoint) {
         isDashed = drawingParams.dashedLine;
 
         Point centerPoint = points.getFirst();
         Point radiusPoint = points.get(1);
 
-        double centerDistanceSq = Point.getDistanceSquared(centerPoint, point);
-        double currentRadiusSq = Point.getDistanceSquared(centerPoint, radiusPoint);
+        double radius = getRadius();
 
-        if (centerDistanceSq <= currentRadiusSq) {
-            int dX = point.getX() - centerPoint.getX();
-            int dY = point.getY() - centerPoint.getY();
-
-            centerPoint.setX(centerPoint.getX() + dX);
-            centerPoint.setY(centerPoint.getY() + dY);
-
-            radiusPoint.setX(radiusPoint.getX() + dX);
-            radiusPoint.setY(radiusPoint.getY() + dY);
+        Point movePoint;
+        if (!newPoint && movePointIndex >= 0 && movePointIndex < points.size()) {
+            movePoint = points.get(movePointIndex);
         } else {
-            radiusPoint.set(point);
+            double distanceToCenter = Point.getDistance(centerPoint, click);
+            double distanceToRadius = Point.getDistance(radiusPoint, click);
+
+            if (distanceToCenter < distanceToRadius && distanceToCenter < radius / 2) movePoint = centerPoint;
+            else movePoint = radiusPoint;
+            movePointIndex = points.indexOf(movePoint);
+        }
+
+        if (movePoint == centerPoint) {
+            Point d = Point.subtract(click, centerPoint);
+            movePoint.set(click);
+            radiusPoint.set(Point.add(radiusPoint, d));
+        } else {
+            movePoint.set(click);
         }
     }
 
     @Override
-    public List<Point> points() {
-        return points;
-    }
-
-    @Override
-    public boolean isFinished() {
-        return isFinished;
-    }
-
-    @Override
-    public void setIsFinished(boolean finished) {
-        this.isFinished = finished;
-    }
-
-    @Override
     public void place(Point point, boolean doAlignLine) {
-        this.points.getLast().set(point);
-        setIsFinished(true);
-    }
-
-    @Override
-    public boolean isDashed() {
-        return isDashed;
-    }
-
-    @Override
-    public void setISDashed(boolean isDashed) {
-        this.isDashed = isDashed;
+        points.getLast().set(point);
+        isFinished = true;
     }
 
     @Override
@@ -91,7 +64,6 @@ public class Circle implements Shape {
         double radius = getRadius();
         double d = Point.getDistance(getCenter(), click);
 
-//        return (d <= radius) ? d : (d - radius);
         return (d <= radius / 2) ? d : Math.abs((d - radius));
     }
 

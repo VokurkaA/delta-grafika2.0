@@ -10,9 +10,6 @@ public class Point {
     }
 
     public static double getDistance(Point a, Point b) {
-//        int dx = b.getX() - a.getX();
-//        int dy = b.getY() - a.getY();
-//        return Math.sqrt(dx * dx + dy * dy);
         return Math.sqrt(getDistanceSquared(a, b));
     }
 
@@ -20,6 +17,14 @@ public class Point {
         int dx = a.getX() - b.getX();
         int dy = a.getY() - b.getY();
         return dx * dx + dy * dy;
+    }
+
+    public static Point add(Point a, Point b) {
+        return new Point(a.getX() + b.getX(), a.getY() + b.getY());
+    }
+
+    public static Point subtract(Point a, Point b) {
+        return new Point(a.getX() - b.getX(), a.getY() - b.getY());
     }
 
     public int getX() {
@@ -45,6 +50,11 @@ public class Point {
     public void set(Point point) {
         this.x = point.getX();
         this.y = point.getY();
+    }
+
+    @Override
+    public String toString() {
+        return "Point{" + "x=" + x + ", y=" + y + '}';
     }
 
     @Override

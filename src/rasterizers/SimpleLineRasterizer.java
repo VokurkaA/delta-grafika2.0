@@ -9,7 +9,7 @@ public class SimpleLineRasterizer {
     public static void rasterize(Graphics g, Shape shape, Color color) {
         if (!(shape instanceof Line line)) return;
 
-        if (line.getA().equals(line.getB())) return;
+        if (line.getA() == line.getB()) return;
 
         g.setColor(color);
 

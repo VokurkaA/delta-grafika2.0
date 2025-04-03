@@ -2,63 +2,27 @@ package models;
 
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
-public class Polygon implements Shape {
+public class Polygon extends Shape {
     private static final int finishDistanceThreshold = 10;
-    private final List<Point> points = new ArrayList<>();
-    private int movePointIndex = -1;
-    private Color color;
-    private boolean isDashed;
-    private boolean isFinished = false;
 
     public Polygon(List<Point> points, Color color, boolean isDashed) {
+        this.points = points;
         this.color = color;
-        this.points.addAll(points);
         this.isDashed = isDashed;
     }
 
-    public Polygon(Point a, boolean isDashed) {
-        this.points.add(a);
-        this.points.add(new Point(a.getX(), a.getY()));
-        this.color = Color.red;
-        this.isDashed = isDashed;
-    }
-
-    public void addPoint(Point point) {
-        points.add(point);
-    }
-
-    @Override
-    public List<Point> points() {
-        return points;
-    }
-
-    @Override
-    public boolean isFinished() {
-        return isFinished;
-    }
-
-    @Override
-    public void setIsFinished(boolean finished) {
-        this.isFinished = finished;
-    }
-
-    @Override
-    public boolean isDashed() {
-        return isDashed;
-    }
-
-    @Override
-    public void setISDashed(boolean isDashed) {
-        this.isDashed = isDashed;
+    public Polygon(Point a) {
+        this(new ArrayList<>(Arrays.asList(a, new Point(a.getX(), a.getY()))), Color.red, false);
     }
 
     @Override
     public void place(Point point, boolean doAlignLine) {
         if (points.size() >= 3 && Math.abs(point.getX() - points.getFirst().getX()) < finishDistanceThreshold && Math.abs(point.getY() - points.getFirst().getY()) < finishDistanceThreshold) {
-            points.getLast().set(points.getFirst());
-            setIsFinished(true);
+            points.removeLast();
+            isFinished = true;
         } else {
             if (doAlignLine) {
                 Point lastFixedPoint = points.get(points.size() - 2);
@@ -73,76 +37,43 @@ public class Polygon implements Shape {
     @Override
     public void move(Point click, DrawingParams drawingParams, boolean newPoint) {
         isDashed = drawingParams.dashedLine;
-        Point nearestPoint = null;
-        if (movePointIndex >= 0 && movePointIndex < points.size() && Point.getDistance(click, points.get(movePointIndex)) <= finishDistanceThreshold) {
-            nearestPoint = points.get(movePointIndex);
-        } else {
-            if (!points.isEmpty()) {
-                nearestPoint = points.getFirst();
-                double minDistance = Point.getDistance(nearestPoint, click);
 
-                for (Point p : points) {
-                    double distance = Point.getDistance(p, click);
-                    if (distance < minDistance) {
-                        minDistance = distance;
-                        nearestPoint = p;
-                    }
-                }
-                if (nearestPoint != null) {
-                    movePointIndex = points.indexOf(nearestPoint);
+        if (newPoint) {
+            if (points.isEmpty()) return;
+
+            Point nearestPoint = points.getFirst();
+            double minDistance = Point.getDistance(nearestPoint, click);
+
+            for (Point p : points) {
+                double distance = Point.getDistance(p, click);
+                if (distance < minDistance) {
+                    minDistance = distance;
+                    nearestPoint = p;
                 }
             }
-        }
-
-        if (nearestPoint == null) {
-            return;
-        }
-
-        Point targetPoint;
-        if (drawingParams.doAlignLine) {
-            int nearestIndex = points.indexOf(nearestPoint);
-
-            Point referencePoint;
-            if (nearestIndex == 0) referencePoint = points.get(1);
-            else if (nearestIndex == points.size() - 1) referencePoint = points.get(points.size() - 2);
-            else referencePoint = points.get(nearestIndex - 1);
-
-            targetPoint = Line.alignPoint(referencePoint, click);
+            movePointIndex = points.indexOf(nearestPoint);
         } else {
-            targetPoint = click;
-        }
+            if (movePointIndex < 0 || movePointIndex > points.size() - 1) return;
 
-        nearestPoint.set(targetPoint);
+            Point movePoint = points.get(movePointIndex);
+            Point targetPoint;
+            if (drawingParams.doAlignLine) {
+                Point referencePoint;
+                if (movePointIndex == 0) referencePoint = points.get(1);
+                else if (movePointIndex == points.size() - 1) referencePoint = points.get(points.size() - 2);
+                else referencePoint = points.get(movePointIndex - 1);
 
-        if (isFinished) {
-            int nearestIndex = points.indexOf(nearestPoint);
-            if (nearestIndex == 0) {
-                points.getLast().set(targetPoint);
-            } else if (nearestIndex == points.size() - 1) {
-                points.getFirst().set(targetPoint);
+                targetPoint = Line.alignPoint(referencePoint, click);
+            } else {
+                targetPoint = click;
             }
+            movePoint.set(targetPoint);
         }
-    }
-
-    public Color getColor() {
-        return color;
-    }
-
-    public void setColor(Color color) {
-        this.color = color;
-    }
-
-    public int getPointCount() {
-        return points.size();
-    }
-
-    public boolean isValid() {
-        return points.size() >= 3;
     }
 
     @Override
     public void rasterize(Graphics g) {
-        int n = getPointCount();
+        int n = points.size();
         if (n < 2) return;
 
         g.setColor(color);
@@ -151,6 +82,7 @@ public class Polygon implements Shape {
             Line l = new Line(points.get(i), points.get(i + 1), color, isDashed);
             l.rasterize(g);
         }
+        if (isFinished) new Line(points.getLast(), points.getFirst(), color, isDashed).rasterize(g);
     }
 
     @Override

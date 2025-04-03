@@ -4,15 +4,8 @@ import rasterizers.DashedLineRasterizer;
 import rasterizers.SimpleLineRasterizer;
 
 import java.awt.*;
-import java.util.ArrayList;
-import java.util.List;
 
-public class Line implements Shape {
-    private final List<Point> points = new ArrayList<>();
-    private final Color color;
-    private boolean isDashed;
-    private boolean isFinished = false;
-
+public class Line extends Shape {
     public Line(Point a, Point b, Color color, boolean isDashed) {
         points.add(a);
         points.add(b);
@@ -20,8 +13,8 @@ public class Line implements Shape {
         this.isDashed = isDashed;
     }
 
-    public Line(Point a, boolean isDashed) {
-        this(a, new Point(a.getX(), a.getY()), Color.red, isDashed);
+    public Line(Point a) {
+        this(a, new Point(a.getX(), a.getY()), Color.red, false);
     }
 
     public static Point alignPoint(Point a, Point b) {
@@ -49,50 +42,22 @@ public class Line implements Shape {
         points.set(1, point);
     }
 
-    public Color getColor() {
-        return color;
-    }
-
-    @Override
-    public List<Point> points() {
-        return points;
-    }
-
-    @Override
-    public boolean isFinished() {
-        return isFinished;
-    }
-
-    @Override
-    public void setIsFinished(boolean finished) {
-        this.isFinished = finished;
-    }
-
-    @Override
-    public boolean isDashed() {
-        return isDashed;
-    }
-
-    @Override
-    public void setISDashed(boolean isDashed) {
-        this.isDashed = isDashed;
-    }
-
     @Override
     public void place(Point point, boolean doAlignLine) {
-        if (doAlignLine) this.setB(Line.alignPoint(getA(), point));
-        else this.setB(point);
-        setIsFinished(true);
+        if (doAlignLine) setB(Line.alignPoint(getA(), point));
+        else setB(point);
+        isFinished = true;
     }
 
     @Override
-    public void move(Point point, DrawingParams drawingParams, boolean newPoint) {
+    public void move(Point click, DrawingParams drawingParams, boolean newPoint) {
         isDashed = drawingParams.dashedLine;
 
-        Point nearestPoint = (Point.getDistance(getA(), point) <= Point.getDistance(getB(), point)) ? getA() : getB();
-        Point targetPoint = point;
+        Point nearestPoint = (Point.getDistance(getA(), click) <= Point.getDistance(getB(), click)) ? getA() : getB();
+
+        Point targetPoint = click;
         if (drawingParams.doAlignLine) {
-            targetPoint = Line.alignPoint(nearestPoint == getA() ? getB() : getA(), point);
+            targetPoint = Line.alignPoint(nearestPoint == getA() ? getB() : getA(), click);
         }
 
         nearestPoint.set(targetPoint);

@@ -3,19 +3,22 @@ package models;
 import enums.DrawingShape;
 
 import java.awt.*;
-import java.util.List;
 
-public interface Shape extends Drawable {
-    static Shape getShapeByEnum(DrawingShape drawingShape, Point startPoint, boolean isDashed) {
+public abstract class Shape extends Drawable {
+    public boolean isDashed = false;
+    public boolean isFinished = false;
+    protected int movePointIndex = -1;
+
+    public static Shape getShapeByEnum(DrawingShape drawingShape, Point startPoint) {
         switch (drawingShape) {
             case line -> {
-                return new Line(startPoint, isDashed);
+                return new Line(startPoint);
             }
             case polygon -> {
-                return new Polygon(startPoint, isDashed);
+                return new Polygon(startPoint);
             }
             case circle -> {
-                return new Circle(startPoint, isDashed);
+                return new Circle(startPoint);
             }
             default -> {
                 return null;
@@ -23,22 +26,11 @@ public interface Shape extends Drawable {
         }
     }
 
-    @Override
-    List<Point> points();
+    public abstract void place(Point point, boolean doAlignLine);
 
-    boolean isFinished();
+    public abstract void move(Point point, DrawingParams drawingParams, boolean newPoint);
 
-    boolean isDashed();
+    abstract void rasterize(Graphics g);
 
-    void setIsFinished(boolean finished);
-
-    void setISDashed(boolean isDashed);
-
-    void place(Point point, boolean doAlignLine);
-
-    void move(Point point, DrawingParams drawingParams, boolean newPoint);
-
-    void rasterize(Graphics g);
-
-    double getNearestDistance(Point click);
+    abstract double getNearestDistance(Point click);
 }

@@ -9,7 +9,7 @@ public class DashedCircleRasterizer {
     public static void rasterize(Graphics g, models.Shape shape, Color color) {
         if (!(shape instanceof Circle circle)) return;
 
-        double radius = Point.getDistance(circle.points().get(1), circle.points().getFirst());
+        double radius = Point.getDistance(circle.points.get(1), circle.points.getFirst());
         int x = (int) radius;
         int y = 0;
 
