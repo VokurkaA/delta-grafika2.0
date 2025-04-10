@@ -1,8 +1,12 @@
 import enums.DrawingShape;
-import models.*;
+import enums.DrawingTool;
 import models.Canvas;
-import models.Point;
-import models.Shape;
+import models.DrawingParams;
+import models.ToolBar;
+import models.drawable.Point;
+import models.drawable.shape.Line;
+import models.drawable.shape.Shape;
+import models.factory.ShapeFactory;
 
 import javax.swing.*;
 import java.awt.*;
@@ -13,8 +17,8 @@ import java.awt.event.MouseEvent;
 
 public class Main {
     public static void main(String[] args) {
+        DrawingParams drawingParams = new DrawingParams(false, false, DrawingShape.polygon, 1, Color.red, DrawingTool.shape);
         Canvas canvas = new Canvas(1440, 1080, Color.black);
-        DrawingParams drawingParams = new DrawingParams(false, false, DrawingShape.polygon);
 
         MouseAdapter mouseAdapter = new MouseAdapter() {
             @Override
@@ -33,7 +37,7 @@ public class Main {
 
                 Shape shape = canvas.getLastShape();
                 if (shape == null || shape.isFinished) {
-                    canvas.addShape(Shape.getShapeByEnum(drawingParams.drawingShape, newPoint));
+                    canvas.addShape(ShapeFactory.getShapeByEnum(drawingParams.drawingShape, newPoint));
                 } else {
                     shape.place(newPoint, drawingParams.doAlignLine);
                 }
@@ -102,6 +106,12 @@ public class Main {
                     case KeyEvent.VK_O:
                         changeDrawingShape(canvas, DrawingShape.circle);
                         break;
+                    case KeyEvent.VK_R:
+                        changeDrawingShape(canvas, DrawingShape.rectangle);
+                        break;
+                    case KeyEvent.VK_S:
+                        changeDrawingShape(canvas, DrawingShape.square);
+                        break;
                     case KeyEvent.VK_SHIFT:
                         drawingParams.doAlignLine = true;
                         break;
@@ -131,9 +141,20 @@ public class Main {
             }
         };
 
-        canvas.getDrawingPanel().addMouseListener(mouseAdapter);
-        canvas.getDrawingPanel().addMouseMotionListener(mouseAdapter);
+        JPanel drawingPanel = canvas.getDrawingPanel();
+        drawingPanel.addMouseListener(mouseAdapter);
+        drawingPanel.addMouseMotionListener(mouseAdapter);
 
-        canvas.addKeyListener(keyAdapter);
+        drawingPanel.setFocusable(true);
+
+        drawingPanel.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent e) {
+                drawingPanel.requestFocusInWindow();
+            }
+        });
+
+        drawingPanel.addKeyListener(keyAdapter);
+        SwingUtilities.invokeLater(drawingPanel::requestFocusInWindow);
     }
 }

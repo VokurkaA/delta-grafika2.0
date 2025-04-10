@@ -3,5 +3,7 @@ package enums;
 public enum DrawingShape {
     line,
     polygon,
-    circle
+    circle,
+    rectangle,
+    square
 }

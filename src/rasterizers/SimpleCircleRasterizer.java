@@ -1,8 +1,8 @@
 package rasterizers;
 
-import models.Circle;
-import models.Point;
-import models.Shape;
+import models.drawable.shape.Circle;
+import models.drawable.Point;
+import models.drawable.shape.Shape;
 
 import java.awt.*;
 

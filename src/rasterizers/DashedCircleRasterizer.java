@@ -1,12 +1,13 @@
 package rasterizers;
 
-import models.Circle;
-import models.Point;
+import models.drawable.shape.Circle;
+import models.drawable.Point;
+import models.drawable.shape.Shape;
 
 import java.awt.*;
 
 public class DashedCircleRasterizer {
-    public static void rasterize(Graphics g, models.Shape shape, Color color) {
+    public static void rasterize(Graphics g, Shape shape, Color color) {
         if (!(shape instanceof Circle circle)) return;
 
         double radius = Point.getDistance(circle.points.get(1), circle.points.getFirst());

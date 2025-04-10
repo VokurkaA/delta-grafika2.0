@@ -1,7 +1,7 @@
 package rasterizers;
 
-import models.Line;
-import models.Shape;
+import models.drawable.shape.Line;
+import models.drawable.shape.Shape;
 
 import java.awt.*;
 

@@ -1,5 +1,7 @@
 package models;
 
+import models.drawable.shape.Shape;
+
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
@@ -7,6 +9,7 @@ import java.util.List;
 
 public class Canvas extends JFrame {
     private final JPanel panel;
+    private final ToolBar toolBar;
     private final List<Shape> shapes = new ArrayList<>();
 
     public Canvas(int width, int height, Color backgroundColor) {
@@ -29,9 +32,13 @@ public class Canvas extends JFrame {
 
         add(panel);
         setVisible(true);
+
+        this.toolBar = new ToolBar();
+        add(toolBar, BorderLayout.WEST);
+        revalidate();
     }
 
-    public Shape getNearestShape(Point click) {
+    public Shape getNearestShape(models.drawable.Point click) {
         Shape nearestShape = null;
         double minDistance = Double.MAX_VALUE;
         int threshold = 25;

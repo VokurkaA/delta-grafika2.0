@@ -1,4 +1,4 @@
-package models;
+package models.drawable;
 
 public class Point {
     private int x;

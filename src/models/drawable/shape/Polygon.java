@@ -1,4 +1,7 @@
-package models;
+package models.drawable.shape;
+
+import models.DrawingParams;
+import models.drawable.Point;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -8,44 +11,44 @@ import java.util.List;
 public class Polygon extends Shape {
     private static final int finishDistanceThreshold = 10;
 
-    public Polygon(List<Point> points, Color color, boolean isDashed) {
+    public Polygon(List<models.drawable.Point> points, Color color, boolean isDashed) {
         this.points = points;
         this.color = color;
         this.isDashed = isDashed;
     }
 
     public Polygon(Point a) {
-        this(new ArrayList<>(Arrays.asList(a, new Point(a.getX(), a.getY()))), Color.red, false);
+        this(new ArrayList<>(Arrays.asList(a, new models.drawable.Point(a.getX(), a.getY()))), Color.red, false);
     }
 
     @Override
-    public void place(Point point, boolean doAlignLine) {
+    public void place(models.drawable.Point point, boolean doAlignLine) {
         if (points.size() >= 3 && Math.abs(point.getX() - points.getFirst().getX()) < finishDistanceThreshold && Math.abs(point.getY() - points.getFirst().getY()) < finishDistanceThreshold) {
             points.removeLast();
             isFinished = true;
         } else {
             if (doAlignLine) {
-                Point lastFixedPoint = points.get(points.size() - 2);
+                models.drawable.Point lastFixedPoint = points.get(points.size() - 2);
                 points.getLast().set(Line.alignPoint(lastFixedPoint, point));
             } else {
                 points.getLast().set(point);
             }
-            points.add(new Point(point.getX(), point.getY()));
+            points.add(new models.drawable.Point(point.getX(), point.getY()));
         }
     }
 
     @Override
-    public void move(Point click, DrawingParams drawingParams, boolean newPoint) {
+    public void move(models.drawable.Point click, DrawingParams drawingParams, boolean newPoint) {
         isDashed = drawingParams.dashedLine;
 
         if (newPoint) {
             if (points.isEmpty()) return;
 
-            Point nearestPoint = points.getFirst();
-            double minDistance = Point.getDistance(nearestPoint, click);
+            models.drawable.Point nearestPoint = points.getFirst();
+            double minDistance = models.drawable.Point.getDistance(nearestPoint, click);
 
-            for (Point p : points) {
-                double distance = Point.getDistance(p, click);
+            for (models.drawable.Point p : points) {
+                double distance = models.drawable.Point.getDistance(p, click);
                 if (distance < minDistance) {
                     minDistance = distance;
                     nearestPoint = p;
@@ -55,10 +58,10 @@ public class Polygon extends Shape {
         } else {
             if (movePointIndex < 0 || movePointIndex > points.size() - 1) return;
 
-            Point movePoint = points.get(movePointIndex);
-            Point targetPoint;
+            models.drawable.Point movePoint = points.get(movePointIndex);
+            models.drawable.Point targetPoint;
             if (drawingParams.doAlignLine) {
-                Point referencePoint;
+                models.drawable.Point referencePoint;
                 if (movePointIndex == 0) referencePoint = points.get(1);
                 else if (movePointIndex == points.size() - 1) referencePoint = points.get(points.size() - 2);
                 else referencePoint = points.get(movePointIndex - 1);
@@ -86,11 +89,11 @@ public class Polygon extends Shape {
     }
 
     @Override
-    public double getNearestDistance(Point click) {
+    public double getNearestDistance(models.drawable.Point click) {
         if (points.isEmpty()) return Double.MAX_VALUE;
 
-        double minDistance = Point.getDistance(click, points.getFirst());
-        for (Point p : points) {
+        double minDistance = models.drawable.Point.getDistance(click, points.getFirst());
+        for (models.drawable.Point p : points) {
             double distance = Point.getDistance(click, p);
             if (distance < minDistance) {
                 minDistance = distance;

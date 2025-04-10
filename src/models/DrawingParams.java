@@ -1,17 +1,28 @@
 package models;
 
 import enums.DrawingShape;
+import enums.DrawingTool;
+import models.drawable.shape.Shape;
+
+import java.awt.*;
 
 public class DrawingParams {
     public boolean doAlignLine;
     public boolean dashedLine;
     public DrawingShape drawingShape;
     public Shape movingShape;
+    public int lineWidth = 1;
+    public Color drawingColor;
+    public DrawingTool drawingTool;
 
-    public DrawingParams(boolean doAlignLine, boolean dashedLine, DrawingShape drawingShape) {
+
+    public DrawingParams(boolean doAlignLine, boolean dashedLine, DrawingShape drawingShape, int lineWidth, Color drawingColor, DrawingTool drawingTool) {
         this.doAlignLine = doAlignLine;
         this.dashedLine = dashedLine;
         this.drawingShape = drawingShape;
         this.movingShape = null;
+        this.lineWidth = lineWidth;
+        this.drawingColor = drawingColor;
+        this.drawingTool = drawingTool;
     }
 }
