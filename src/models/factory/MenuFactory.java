@@ -44,6 +44,11 @@ public class MenuFactory {
         return button;
     }
 
+    public static JButton createMenu(String title, MenuType menuType, ActionListener listener) {
+        return createMenu(title, null, menuType, listener);
+    }
+
+
     private static JPopupMenu createPopupMenu(MenuType menuType, Enum<?>[] items, ActionListener listener) {
         return switch (menuType) {
             case generic -> createGenericMenu(items, listener);
@@ -56,10 +61,8 @@ public class MenuFactory {
     private static JPopupMenu createGenericMenu(Enum<?>[] items, ActionListener listener) {
         JPopupMenu popupMenu = new JPopupMenu();
         for (Enum<?> item : items) {
-            String itemName = item.name();
-            itemName = itemName.substring(0, 1).toUpperCase() + itemName.substring(1).toLowerCase();
-            JMenuItem menuItem = new JMenuItem(itemName);
-            menuItem.setActionCommand(itemName);
+            JMenuItem menuItem = new JMenuItem(item.name());
+            menuItem.setActionCommand(item.name());
             menuItem.addActionListener(listener);
             popupMenu.add(menuItem);
         }

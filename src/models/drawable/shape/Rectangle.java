@@ -1,5 +1,6 @@
 package models.drawable.shape;
 
+import enums.LineType;
 import models.DrawingParams;
 import models.drawable.Point;
 
@@ -10,26 +11,88 @@ import java.util.List;
 
 public class Rectangle extends Polygon {
 
-    public Rectangle(List<Point> points, Color color, boolean isDashed) {
-        super(points, color, isDashed);
+    public Rectangle(List<Point> points, Color color, LineType lineType) {
+        super(points, color, lineType);
     }
 
     public Rectangle(Point a) {
-        this(new ArrayList<>(Arrays.asList(a, new Point(a.getX(), a.getY()), new Point(a.getX(), a.getY()), new Point(a.getX(), a.getY()))), Color.red, false);
+        this(new ArrayList<>(Arrays.asList(a, new Point(a.getX(), a.getY()), new Point(a.getX(), a.getY()), new Point(a.getX(), a.getY()))), Color.red, LineType.solid);
     }
 
     @Override
     public void place(Point point, boolean doAlignLine) {
+        Point first = points.getFirst();
 
+        points.set(1, new Point(point.getX(), first.getY()));
+        points.set(2, new Point(point.getX(), point.getY()));
+        points.set(3, new Point(first.getX(), point.getY()));
+
+        isFinished = true;
     }
 
-    @Override
-    public void move(Point point, DrawingParams drawingParams, boolean newPoint) {
 
+    @Override
+    public void move(Point click, DrawingParams drawingParams, boolean newPoint) {
+        lineType = drawingParams.lineType;
+
+        if (newPoint) {
+            movePointIndex = points.indexOf(getNearestPoint(click));
+        }
+        if (movePointIndex < 0 || movePointIndex >= points.size()) return;
+
+        Point movePoint = points.get(movePointIndex);
+
+        int deltaX = click.getX() - movePoint.getX();
+        int deltaY = click.getY() - movePoint.getY();
+
+        movePoint.set(new Point(movePoint.getX() + deltaX, movePoint.getY() + deltaY));
+
+        if (movePointIndex == 0) {
+            points.set(1, new Point(points.get(0).getX() + deltaX, points.get(0).getY()));
+            points.set(2, new Point(points.get(0).getX() + deltaX, points.get(0).getY() + deltaY));
+            points.set(3, new Point(points.get(0).getX(), points.get(0).getY() + deltaY));
+        } else if (movePointIndex == 1) {
+            points.set(0, new Point(points.get(1).getX() - deltaX, points.get(1).getY()));
+            points.set(2, new Point(points.get(1).getX() - deltaX, points.get(1).getY() + deltaY));
+            points.set(3, new Point(points.get(1).getX(), points.get(1).getY() + deltaY));
+        } else if (movePointIndex == 2) {
+            points.set(1, new Point(points.get(2).getX() - deltaX, points.get(2).getY()));
+            points.set(0, new Point(points.get(2).getX() - deltaX, points.get(2).getY() - deltaY));
+            points.set(3, new Point(points.get(2).getX(), points.get(2).getY() - deltaY));
+        } else if (movePointIndex == 3) {
+            points.set(1, new Point(points.get(3).getX() + deltaX, points.get(3).getY()));
+            points.set(2, new Point(points.get(3).getX() + deltaX, points.get(3).getY() - deltaY));
+            points.set(0, new Point(points.get(3).getX(), points.get(3).getY() - deltaY));
+        }
     }
 
     @Override
     public void rasterize(Graphics g) {
+        g.setColor(color);
 
+        for (int i = 0; i < points.size(); i++) {
+            int nextIndex = (i + 1) % points.size();
+            Line l = new Line(points.get(i), points.get(nextIndex), color, lineType);
+            l.rasterize(g);
+        }
+    }
+
+    @Override
+    public double getNearestDistance(Point click) {
+        double minDistance = Double.MAX_VALUE;
+
+        for (int i = 0; i < points.size(); i++) {
+            int nextIndex = (i + 1) % points.size();
+            Line l = new Line(points.get(i), points.get(nextIndex), color, lineType);
+            double distance = l.getNearestDistance(click);
+            minDistance = Math.min(minDistance, distance);
+        }
+
+        return minDistance;
+    }
+
+    @Override
+    public String toString() {
+        return "Rectangle";
     }
 }

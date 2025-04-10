@@ -1,8 +1,8 @@
 import enums.DrawingShape;
 import enums.DrawingTool;
+import enums.LineType;
 import models.Canvas;
 import models.DrawingParams;
-import models.ToolBar;
 import models.drawable.Point;
 import models.drawable.shape.Line;
 import models.drawable.shape.Shape;
@@ -17,8 +17,8 @@ import java.awt.event.MouseEvent;
 
 public class Main {
     public static void main(String[] args) {
-        DrawingParams drawingParams = new DrawingParams(false, false, DrawingShape.polygon, 1, Color.red, DrawingTool.shape);
-        Canvas canvas = new Canvas(1440, 1080, Color.black);
+        DrawingParams drawingParams = new DrawingParams(false, LineType.solid, DrawingShape.polygon, 1, Color.red, DrawingTool.shape);
+        Canvas canvas = new Canvas(1440, 1080, Color.black, drawingParams);
 
         MouseAdapter mouseAdapter = new MouseAdapter() {
             @Override
@@ -75,48 +75,14 @@ public class Main {
         };
 
         KeyAdapter keyAdapter = new KeyAdapter() {
-
-            void changeDrawingShape(Canvas canvas, DrawingShape newShape) {
-                if (canvas.getLastShape() != null && !canvas.getLastShape().isFinished) {
-                    canvas.removeLastShape();
-                    drawingParams.movingShape = null;
-                }
-                drawingParams.drawingShape = newShape;
-            }
-
-            void toggleDashedLine(Canvas canvas, boolean isDashed) {
-                if (canvas.getLastShape() != null && !canvas.getLastShape().isFinished) {
-                    canvas.getLastShape().isDashed = isDashed;
-                }
-                drawingParams.dashedLine = isDashed;
-            }
-
             @Override
             public void keyPressed(KeyEvent e) {
                 switch (e.getKeyCode()) {
                     case KeyEvent.VK_C:
                         canvas.clear();
                         break;
-                    case KeyEvent.VK_P:
-                        changeDrawingShape(canvas, DrawingShape.polygon);
-                        break;
-                    case KeyEvent.VK_L:
-                        changeDrawingShape(canvas, DrawingShape.line);
-                        break;
-                    case KeyEvent.VK_O:
-                        changeDrawingShape(canvas, DrawingShape.circle);
-                        break;
-                    case KeyEvent.VK_R:
-                        changeDrawingShape(canvas, DrawingShape.rectangle);
-                        break;
-                    case KeyEvent.VK_S:
-                        changeDrawingShape(canvas, DrawingShape.square);
-                        break;
                     case KeyEvent.VK_SHIFT:
                         drawingParams.doAlignLine = true;
-                        break;
-                    case KeyEvent.VK_CONTROL:
-                        toggleDashedLine(canvas, true);
                         break;
                     case KeyEvent.VK_ESCAPE:
                         if (canvas.getLastShape() != null && !canvas.getLastShape().isFinished)
@@ -129,13 +95,8 @@ public class Main {
 
             @Override
             public void keyReleased(KeyEvent e) {
-                switch (e.getKeyCode()) {
-                    case KeyEvent.VK_CONTROL:
-                        toggleDashedLine(canvas, false);
-                        break;
-                    case KeyEvent.VK_SHIFT:
-                        drawingParams.doAlignLine = false;
-                        break;
+                if (e.getKeyCode() == KeyEvent.VK_SHIFT) {
+                    drawingParams.doAlignLine = false;
                 }
                 canvas.repaint();
             }

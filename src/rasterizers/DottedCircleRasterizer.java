@@ -6,7 +6,7 @@ import models.drawable.shape.Shape;
 
 import java.awt.*;
 
-public class DashedCircleRasterizer {
+public class DottedCircleRasterizer {
     public static void rasterize(Graphics g, Shape shape, Color color) {
         if (!(shape instanceof Circle circle)) return;
 
@@ -18,24 +18,25 @@ public class DashedCircleRasterizer {
         int centerY = circle.getCenter().getY();
 
         g.setColor(color);
-        g.fillRect(centerX, centerY, 1, 1);
+        g.fillRect(centerX, centerY, 1, 1); // Optional: center dot
 
         int P = 1 - (int) radius;
-        int dashLength = 10;
-        int totalCounter = 0;
+        int dotSpacing = 5;
+        int stepCounter = 0;
 
         while (x > y) {
             y++;
             if (P <= 0) {
-                P = P + 2 * y + 1;
+                P += 2 * y + 1;
             } else {
                 x--;
-                P = P + 2 * y - 2 * x + 1;
+                P += 2 * y - 2 * x + 1;
             }
 
             if (x < y) break;
 
-            if (totalCounter < dashLength) {
+            if (stepCounter % dotSpacing == 0) {
+                // Plot all 8 symmetrical points
                 g.fillRect(x + centerX, y + centerY, 1, 1);
                 g.fillRect(-x + centerX, y + centerY, 1, 1);
                 g.fillRect(x + centerX, -y + centerY, 1, 1);
@@ -49,11 +50,7 @@ public class DashedCircleRasterizer {
                 }
             }
 
-            totalCounter++;
-
-            if (totalCounter >= (2 * dashLength)) {
-                totalCounter = 0;
-            }
+            stepCounter++;
         }
     }
 }

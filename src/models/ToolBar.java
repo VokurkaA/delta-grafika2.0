@@ -1,34 +1,46 @@
 package models;
 
-import enums.DrawingShape;
-import enums.DrawingTool;
-import enums.CanvasMenuOptions;
-import enums.MenuType;
+import enums.*;
 import models.factory.MenuFactory;
 
 import javax.swing.*;
+import java.awt.*;
+import java.util.function.Consumer;
 
 public class ToolBar extends JToolBar {
 
-    public ToolBar() {
+    public ToolBar(DrawingParams drawingParams, Consumer<DrawingShape> changeShape, Runnable clearCanvas) {
         super(JToolBar.VERTICAL);
 
         add(MenuFactory.createMenu("Canvas", CanvasMenuOptions.values(), MenuType.generic, e -> {
-            System.out.println("Option selected: " + e.getActionCommand());
+            switch (CanvasMenuOptions.valueOf(e.getActionCommand())) {
+                case clear -> clearCanvas.run();
+                case export -> System.out.println("Export triggered!");
+            }
         }));
+
+        add(MenuFactory.createMenu("Line", LineType.values(), MenuType.generic, e -> {
+            drawingParams.lineType = LineType.valueOf(e.getActionCommand());
+            System.out.println("Line selected: " + drawingParams.lineType);
+        }));
+
         add(MenuFactory.createMenu("Tools", DrawingTool.values(), MenuType.generic, e -> {
             System.out.println("Tool selected: " + e.getActionCommand());
         }));
+
         add(MenuFactory.createMenu("Shapes", DrawingShape.values(), MenuType.generic, e -> {
-            System.out.println("Shape selected: " + e.getActionCommand());
+            changeShape.accept(DrawingShape.valueOf(e.getActionCommand()));
         }));
-        add(MenuFactory.createMenu("Thickness", null, MenuType.slider, e -> {
+
+        add(MenuFactory.createMenu("Thickness", MenuType.slider, e -> {
             System.out.println("Slider value: " + e.getActionCommand());
         }));
-        add(MenuFactory.createMenu("Color", null, MenuType.color, e -> {
-            System.out.println("Color chosen: " + e.getActionCommand());
+
+        add(MenuFactory.createMenu("Color", MenuType.color, e -> {
+            Color selectedColor = new Color(Integer.parseInt(e.getActionCommand()));
+            drawingParams.drawingColor = selectedColor;
+            System.out.println("Color chosen: " + selectedColor);
         }));
-
-
     }
+
 }

@@ -17,7 +17,7 @@ public class ShapeFactory {
         shapeMap.put(DrawingShape.square, Square::new);
     }
 
-    public static Shape getShapeByEnum(DrawingShape drawingShape, models.drawable.Point startPoint) {
+    public static Shape getShapeByEnum(DrawingShape drawingShape, Point startPoint) {
         ShapeCreator creator = shapeMap.get(drawingShape);
         return (creator != null) ? creator.create(startPoint) : null;
     }

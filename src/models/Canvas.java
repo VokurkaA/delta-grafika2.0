@@ -1,5 +1,7 @@
 package models;
 
+import enums.DrawingShape;
+import models.drawable.Point;
 import models.drawable.shape.Shape;
 
 import javax.swing.*;
@@ -11,8 +13,9 @@ public class Canvas extends JFrame {
     private final JPanel panel;
     private final ToolBar toolBar;
     private final List<Shape> shapes = new ArrayList<>();
+    private final DrawingParams drawingParams;
 
-    public Canvas(int width, int height, Color backgroundColor) {
+    public Canvas(int width, int height, Color backgroundColor, DrawingParams drawingParams) {
         setTitle("DELTA grafika");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(width, height);
@@ -33,12 +36,14 @@ public class Canvas extends JFrame {
         add(panel);
         setVisible(true);
 
-        this.toolBar = new ToolBar();
+        this.drawingParams = drawingParams;
+
+        this.toolBar = new ToolBar(drawingParams, this::changeShape, this::clear);
         add(toolBar, BorderLayout.WEST);
         revalidate();
     }
 
-    public Shape getNearestShape(models.drawable.Point click) {
+    public Shape getNearestShape(Point click) {
         Shape nearestShape = null;
         double minDistance = Double.MAX_VALUE;
         int threshold = 25;
@@ -52,6 +57,15 @@ public class Canvas extends JFrame {
         }
 
         return nearestShape;
+    }
+
+    public void changeShape(DrawingShape newShape) {
+        if (getLastShape() != null && getLastShape().toString().toLowerCase().equals(newShape.name())) return;
+        if (getLastShape() != null && !getLastShape().isFinished) {
+            removeLastShape();
+            drawingParams.movingShape = null;
+        }
+        drawingParams.drawingShape = newShape;
     }
 
     public void addShape(Shape shape) {
