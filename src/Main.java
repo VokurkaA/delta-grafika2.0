@@ -56,22 +56,6 @@ public class Main {
                 }
             }
 
-            //            @Override
-//            public void mouseMoved(MouseEvent e) {
-//                Point newPoint = new Point(e.getX(), e.getY());
-//                Shape latestShape = canvas.getLastShape();
-//
-//                if (drawingParams.movingShape != null) {
-//                    drawingParams.movingShape.move(newPoint, drawingParams, false);
-//                } else if (latestShape != null && !latestShape.isFinished) {
-//                    if (drawingParams.doAlignLine && latestShape.points.size() >= 2) {
-//                        Point previousPoint = latestShape.points.get(latestShape.points.size() - 2);
-//                        newPoint = Line.alignPoint(previousPoint, newPoint);
-//                    }
-//                    latestShape.points.set(latestShape.points.size() - 1, newPoint);
-//                }
-//                canvas.repaint();
-//            }
             @Override
             public void mouseMoved(MouseEvent e) {
                 Point newPoint = new Point(e.getX(), e.getY());
@@ -82,6 +66,7 @@ public class Main {
                 } else if (latestShape != null && !latestShape.isFinished) {
                     latestShape.lineType = drawingParams.lineType;
                     latestShape.color = drawingParams.drawingColor;
+                    latestShape.thickness = drawingParams.lineWidth;
                     if (drawingParams.doAlignLine && latestShape.points.size() >= 2) {
                         Point previousPoint = latestShape.points.get(latestShape.points.size() - 2);
                         newPoint = Line.alignPoint(previousPoint, newPoint);

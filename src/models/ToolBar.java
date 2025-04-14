@@ -31,11 +31,10 @@ public class ToolBar extends JToolBar {
             changeShape.accept(DrawingShape.valueOf(e.getActionCommand()));
         }));
 
-        add(MenuFactory.createMenu("Thickness", MenuType.slider, e -> {
-            drawingParams.lineWidth = Math.max(1, Integer.parseInt(e.getActionCommand()));
+        add(MenuFactory.createMenu("Thickness", MenuType.slider, 1, 10, drawingParams.lineWidth, e -> {
+            drawingParams.lineWidth = Integer.parseInt(e.getActionCommand());
             System.out.println("Thickness selected: " + drawingParams.lineWidth);
         }));
-
 
         add(MenuFactory.createMenu("Color", MenuType.color, e -> {
             Color selectedColor = new Color(Integer.parseInt(e.getActionCommand()));
@@ -43,5 +42,4 @@ public class ToolBar extends JToolBar {
             System.out.println("Color chosen: " + selectedColor);
         }));
     }
-
 }

@@ -15,7 +15,7 @@ public class MenuFactory {
 
     static {
         menuMap.put(MenuType.generic, (items, listener) -> createGenericMenu((Enum<?>[]) items, listener));
-        menuMap.put(MenuType.slider, (items, listener) -> createSliderMenu("Slider Menu", listener));
+        menuMap.put(MenuType.slider, (items, listener) -> createSliderMenu("Slider Menu", 1, 10, 1, listener));
         menuMap.put(MenuType.color, (items, listener) -> createColorMenu(listener));
     }
 
@@ -48,11 +48,29 @@ public class MenuFactory {
         return createMenu(title, null, menuType, listener);
     }
 
+    public static JButton createMenu(String title, MenuType menuType, int min, int max, int current, ActionListener listener) {
+        if (menuType != MenuType.slider) {
+            return createMenu(title, null, menuType, listener);
+        }
+
+        JButton button = new JButton(title);
+        int size = 50;
+        button.setPreferredSize(new Dimension(size, size));
+        button.setBackground(new Color(220, 220, 220));
+        button.setFont(new Font("Arial", Font.PLAIN, 14));
+
+        button.addActionListener(e -> {
+            JPopupMenu popupMenu = createSliderMenu(title, min, max, current, listener);
+            popupMenu.show(button, button.getWidth(), 0);
+        });
+
+        return button;
+    }
 
     private static JPopupMenu createPopupMenu(MenuType menuType, Enum<?>[] items, ActionListener listener) {
         return switch (menuType) {
             case generic -> createGenericMenu(items, listener);
-            case slider -> createSliderMenu("Slider Menu", listener);
+            case slider -> createSliderMenu("Slider Menu", 1, 10, 1, listener);
             case color -> createColorMenu(listener);
             default -> throw new IllegalArgumentException("Unknown MenuType");
         };
@@ -69,14 +87,14 @@ public class MenuFactory {
         return popupMenu;
     }
 
-
-    private static JPopupMenu createSliderMenu(String title, ActionListener listener) {
+    // Modified method to accept min, max, and current values
+    private static JPopupMenu createSliderMenu(String title, int min, int max, int current, ActionListener listener) {
         JPopupMenu popupMenu = new JPopupMenu();
 
-        JSlider slider = new JSlider(1, 10, 1);
+        JSlider slider = new JSlider(min, max, current);
         slider.setPaintTicks(true);
         slider.setPaintLabels(true);
-        slider.setMajorTickSpacing(2);
+        slider.setMajorTickSpacing((max - min) / 5);
 
         slider.addChangeListener(e -> {
             if (!slider.getValueIsAdjusting()) {
