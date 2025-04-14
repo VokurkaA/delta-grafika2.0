@@ -5,13 +5,13 @@ import models.drawable.shape.Shape;
 
 import java.awt.*;
 
-public class SimpleLineRasterizer {
-    public static void rasterize(Graphics g, Shape shape, Color color) {
+public class SimpleLineRasterizer implements Rasterizer {
+    public void rasterize(Graphics g, Shape shape) {
         if (!(shape instanceof Line line)) return;
 
         if (line.getA() == line.getB()) return;
 
-        g.setColor(color);
+        g.setColor(shape.color);
 
         int dx = line.getB().getX() - line.getA().getX();
         int dy = line.getB().getY() - line.getA().getY();
@@ -25,7 +25,7 @@ public class SimpleLineRasterizer {
         float y = line.getA().getY();
 
         for (int i = 0; i < step; i++) {
-            g.fillRect(Math.round(x), Math.round(y), 1, 1);
+            g.fillRect(Math.round(x), Math.round(y), shape.thickness, shape.thickness);
             x += xIncr;
             y += yIncr;
         }

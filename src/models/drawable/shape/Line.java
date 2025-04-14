@@ -5,6 +5,7 @@ import models.DrawingParams;
 import models.drawable.Point;
 import rasterizers.DashedLineRasterizer;
 import rasterizers.DottedLineRasterizer;
+import rasterizers.Rasterizer;
 import rasterizers.SimpleLineRasterizer;
 
 import java.awt.*;
@@ -17,8 +18,8 @@ public class Line extends Shape {
         this.lineType = lineType;
     }
 
-    public Line(Point a) {
-        this(a, new Point(a.getX(), a.getY()), Color.red, LineType.solid);
+    public Line(Point a, DrawingParams drawingParams) {
+        this(a, new Point(a.getX(), a.getY()), drawingParams.drawingColor, drawingParams.lineType);
     }
 
     public static Point alignPoint(Point a, Point b) {
@@ -69,12 +70,12 @@ public class Line extends Shape {
 
     @Override
     public void rasterize(Graphics g) {
-        System.out.print(lineType);
+        Rasterizer rasterizer = new SimpleLineRasterizer();
         switch (lineType) {
-            case solid -> SimpleLineRasterizer.rasterize(g, this, color);
-            case dashed -> DashedLineRasterizer.rasterize(g, this, color);
-            case dotted -> DottedLineRasterizer.rasterize(g, this, color);
+            case dashed -> rasterizer = new DashedLineRasterizer();
+            case dotted -> rasterizer = new DottedLineRasterizer();
         }
+        rasterizer.rasterize(g, this);
     }
 
     @Override

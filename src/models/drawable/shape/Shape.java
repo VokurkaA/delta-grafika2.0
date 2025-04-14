@@ -9,6 +9,7 @@ import java.awt.*;
 
 public abstract class Shape extends Drawable {
     public LineType lineType;
+    public int thickness = 1;
     public boolean isFinished = false;
     protected int movePointIndex = -1;
 

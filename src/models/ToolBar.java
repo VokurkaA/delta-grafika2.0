@@ -21,7 +21,6 @@ public class ToolBar extends JToolBar {
 
         add(MenuFactory.createMenu("Line", LineType.values(), MenuType.generic, e -> {
             drawingParams.lineType = LineType.valueOf(e.getActionCommand());
-            System.out.println("Line selected: " + drawingParams.lineType);
         }));
 
         add(MenuFactory.createMenu("Tools", DrawingTool.values(), MenuType.generic, e -> {
@@ -33,8 +32,10 @@ public class ToolBar extends JToolBar {
         }));
 
         add(MenuFactory.createMenu("Thickness", MenuType.slider, e -> {
-            System.out.println("Slider value: " + e.getActionCommand());
+            drawingParams.lineWidth = Math.max(1, Integer.parseInt(e.getActionCommand()));
+            System.out.println("Thickness selected: " + drawingParams.lineWidth);
         }));
+
 
         add(MenuFactory.createMenu("Color", MenuType.color, e -> {
             Color selectedColor = new Color(Integer.parseInt(e.getActionCommand()));

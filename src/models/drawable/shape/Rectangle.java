@@ -15,8 +15,8 @@ public class Rectangle extends Polygon {
         super(points, color, lineType);
     }
 
-    public Rectangle(Point a) {
-        this(new ArrayList<>(Arrays.asList(a, new Point(a.getX(), a.getY()), new Point(a.getX(), a.getY()), new Point(a.getX(), a.getY()))), Color.red, LineType.solid);
+    public Rectangle(Point a, DrawingParams drawingParams) {
+        this(new ArrayList<>(Arrays.asList(a, new Point(a.getX(), a.getY()), new Point(a.getX(), a.getY()), new Point(a.getX(), a.getY()))), drawingParams.drawingColor, drawingParams.lineType);
     }
 
     @Override

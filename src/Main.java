@@ -37,7 +37,7 @@ public class Main {
 
                 Shape shape = canvas.getLastShape();
                 if (shape == null || shape.isFinished) {
-                    canvas.addShape(ShapeFactory.getShapeByEnum(drawingParams.drawingShape, newPoint));
+                    canvas.addShape(ShapeFactory.getShapeByEnum(drawingParams.drawingShape, newPoint, drawingParams));
                 } else {
                     shape.place(newPoint, drawingParams.doAlignLine);
                 }
@@ -56,6 +56,22 @@ public class Main {
                 }
             }
 
+            //            @Override
+//            public void mouseMoved(MouseEvent e) {
+//                Point newPoint = new Point(e.getX(), e.getY());
+//                Shape latestShape = canvas.getLastShape();
+//
+//                if (drawingParams.movingShape != null) {
+//                    drawingParams.movingShape.move(newPoint, drawingParams, false);
+//                } else if (latestShape != null && !latestShape.isFinished) {
+//                    if (drawingParams.doAlignLine && latestShape.points.size() >= 2) {
+//                        Point previousPoint = latestShape.points.get(latestShape.points.size() - 2);
+//                        newPoint = Line.alignPoint(previousPoint, newPoint);
+//                    }
+//                    latestShape.points.set(latestShape.points.size() - 1, newPoint);
+//                }
+//                canvas.repaint();
+//            }
             @Override
             public void mouseMoved(MouseEvent e) {
                 Point newPoint = new Point(e.getX(), e.getY());
@@ -64,6 +80,8 @@ public class Main {
                 if (drawingParams.movingShape != null) {
                     drawingParams.movingShape.move(newPoint, drawingParams, false);
                 } else if (latestShape != null && !latestShape.isFinished) {
+                    latestShape.lineType = drawingParams.lineType;
+                    latestShape.color = drawingParams.drawingColor;
                     if (drawingParams.doAlignLine && latestShape.points.size() >= 2) {
                         Point previousPoint = latestShape.points.get(latestShape.points.size() - 2);
                         newPoint = Line.alignPoint(previousPoint, newPoint);

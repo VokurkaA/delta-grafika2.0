@@ -73,7 +73,7 @@ public class MenuFactory {
     private static JPopupMenu createSliderMenu(String title, ActionListener listener) {
         JPopupMenu popupMenu = new JPopupMenu();
 
-        JSlider slider = new JSlider(1, 10, 5);
+        JSlider slider = new JSlider(1, 10, 1);
         slider.setPaintTicks(true);
         slider.setPaintLabels(true);
         slider.setMajorTickSpacing(2);

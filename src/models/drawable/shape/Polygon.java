@@ -3,6 +3,10 @@ package models.drawable.shape;
 import enums.LineType;
 import models.DrawingParams;
 import models.drawable.Point;
+import rasterizers.DashedLineRasterizer;
+import rasterizers.DottedLineRasterizer;
+import rasterizers.Rasterizer;
+import rasterizers.SimpleLineRasterizer;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -18,8 +22,8 @@ public class Polygon extends Shape {
         this.lineType = lineType;
     }
 
-    public Polygon(Point a) {
-        this(new ArrayList<>(Arrays.asList(a, new Point(a.getX(), a.getY()))), Color.red, LineType.solid);
+    public Polygon(Point a, DrawingParams drawingParams) {
+        this(new ArrayList<>(Arrays.asList(a, new Point(a.getX(), a.getY()))), drawingParams.drawingColor, drawingParams.lineType);
     }
 
     @Override
@@ -70,9 +74,15 @@ public class Polygon extends Shape {
         if (n < 2) return;
 
         g.setColor(color);
+        Rasterizer rasterizer = new SimpleLineRasterizer();
+        switch (lineType) {
+            case dashed -> rasterizer = new DashedLineRasterizer();
+            case dotted -> rasterizer = new DottedLineRasterizer();
+        }
 
         for (int i = 0; i < n - 1; i++) {
             Line l = new Line(points.get(i), points.get(i + 1), color, lineType);
+            rasterizer.rasterize(g, l);
             l.rasterize(g);
         }
         if (isFinished) new Line(points.getLast(), points.getFirst(), color, lineType).rasterize(g);

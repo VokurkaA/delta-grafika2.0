@@ -14,8 +14,8 @@ public class Square extends Rectangle {
         ensureEqualSides();
     }
 
-    public Square(Point a) {
-        super(a);
+    public Square(Point a, DrawingParams drawingParams) {
+        super(a, drawingParams);
         ensureEqualSides();
     }
 

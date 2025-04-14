@@ -6,8 +6,8 @@ import models.drawable.shape.Shape;
 
 import java.awt.*;
 
-public class SimpleCircleRasterizer {
-    public static void rasterize(Graphics g, Shape shape, Color color) {
+public class SimpleCircleRasterizer implements Rasterizer {
+    public void rasterize(Graphics g, Shape shape) {
         if (!(shape instanceof Circle circle)) return;
 
 
@@ -18,19 +18,19 @@ public class SimpleCircleRasterizer {
         int centerX = circle.getCenter().getX();
         int centerY = circle.getCenter().getY();
 
-        g.setColor(color);
-        g.fillRect(centerX, centerY, 1, 1);
+        g.setColor(shape.color);
+        g.fillRect(centerX, centerY, shape.thickness, shape.thickness);
 
-        g.fillRect(x + centerX, y + centerY, 1, 1);
+        g.fillRect(x + centerX, y + centerY, shape.thickness, shape.thickness);
         if (radius > 0) {
-            g.fillRect(x + centerX, y + centerY, 1, 1);
-            g.fillRect(-x + centerX, y + centerY, 1, 1);
-            g.fillRect(x + centerX, -y + centerY, 1, 1);
-            g.fillRect(-x + centerX, -y + centerY, 1, 1);
-            g.fillRect(y + centerX, x + centerY, 1, 1);
-            g.fillRect(-y + centerX, x + centerY, 1, 1);
-            g.fillRect(y + centerX, -x + centerY, 1, 1);
-            g.fillRect(-y + centerX, -x + centerY, 1, 1);
+            g.fillRect(x + centerX, y + centerY, shape.thickness, shape.thickness);
+            g.fillRect(-x + centerX, y + centerY, shape.thickness, shape.thickness);
+            g.fillRect(x + centerX, -y + centerY, shape.thickness, shape.thickness);
+            g.fillRect(-x + centerX, -y + centerY, shape.thickness, shape.thickness);
+            g.fillRect(y + centerX, x + centerY, shape.thickness, shape.thickness);
+            g.fillRect(-y + centerX, x + centerY, shape.thickness, shape.thickness);
+            g.fillRect(y + centerX, -x + centerY, shape.thickness, shape.thickness);
+            g.fillRect(-y + centerX, -x + centerY, shape.thickness, shape.thickness);
         }
 
 
@@ -44,16 +44,16 @@ public class SimpleCircleRasterizer {
             }
             if (x < y) break;
 
-            g.fillRect(x + centerX, y + centerY, 1, 1);
-            g.fillRect(-x + centerX, y + centerY, 1, 1);
-            g.fillRect(x + centerX, -y + centerY, 1, 1);
-            g.fillRect(-x + centerX, -y + centerY, 1, 1);
+            g.fillRect(x + centerX, y + centerY, shape.thickness, shape.thickness);
+            g.fillRect(-x + centerX, y + centerY, shape.thickness, shape.thickness);
+            g.fillRect(x + centerX, -y + centerY, shape.thickness, shape.thickness);
+            g.fillRect(-x + centerX, -y + centerY, shape.thickness, shape.thickness);
 
             if (x != y) {
-                g.fillRect(y + centerX, x + centerY, 1, 1);
-                g.fillRect(-y + centerX, x + centerY, 1, 1);
-                g.fillRect(y + centerX, -x + centerY, 1, 1);
-                g.fillRect(-y + centerX, -x + centerY, 1, 1);
+                g.fillRect(y + centerX, x + centerY, shape.thickness, shape.thickness);
+                g.fillRect(-y + centerX, x + centerY, shape.thickness, shape.thickness);
+                g.fillRect(y + centerX, -x + centerY, shape.thickness, shape.thickness);
+                g.fillRect(-y + centerX, -x + centerY, shape.thickness, shape.thickness);
             }
         }
     }

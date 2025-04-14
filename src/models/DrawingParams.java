@@ -12,7 +12,7 @@ public class DrawingParams {
     public LineType lineType;
     public DrawingShape drawingShape;
     public Shape movingShape;
-    public int lineWidth = 1;
+    public int lineWidth;
     public Color drawingColor;
     public DrawingTool drawingTool;
 
