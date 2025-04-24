@@ -4,7 +4,6 @@ import enums.LineType;
 import models.Canvas;
 import models.DrawingParams;
 
-import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
@@ -16,13 +15,10 @@ public class Main {
         DrawingParams drawingParams = new DrawingParams(false, LineType.solid, DrawingShape.polygon, 1, Color.red, DrawingTool.shape);
         Canvas canvas = new Canvas(1440, 1080, Color.black, drawingParams);
 
-        JPanel drawingPanel = canvas.getDrawingPanel();
-
         MouseAdapter mouseAdapter = new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
                 drawingParams.drawingTool.onMousePress(canvas, e, drawingParams);
-                drawingPanel.requestFocusInWindow();
             }
 
             @Override
@@ -48,11 +44,9 @@ public class Main {
             }
         };
 
-        drawingPanel.addMouseListener(mouseAdapter);
-        drawingPanel.addMouseMotionListener(mouseAdapter);
-        drawingPanel.setFocusable(true);
-        drawingPanel.addKeyListener(keyAdapter);
-
-        SwingUtilities.invokeLater(drawingPanel::requestFocusInWindow);
+        canvas.getDrawingPanel().addMouseListener(mouseAdapter);
+        canvas.getDrawingPanel().addMouseMotionListener(mouseAdapter);
+        canvas.getDrawingPanel().addKeyListener(keyAdapter);
+        canvas.getDrawingPanel().setFocusable(true);
     }
 }

@@ -12,6 +12,9 @@ import java.util.function.BiConsumer;
 public class MenuFactory {
 
     private static final EnumMap<MenuType, BiConsumer<Object[], ActionListener>> menuMap = new EnumMap<>(MenuType.class);
+    private static final int BUTTON_SIZE = 50;
+    private static final Color BUTTON_COLOR = new Color(220, 220, 220);
+    private static final Font BUTTON_FONT = new Font("Arial", Font.PLAIN, 14);
 
     static {
         menuMap.put(MenuType.generic, (items, listener) -> createGenericMenu((Enum<?>[]) items, listener));
@@ -21,11 +24,7 @@ public class MenuFactory {
 
     public static JButton createMenu(String title, Enum<?>[] items, MenuType menuType, boolean isVisible, ActionListener listener) {
         JButton button = new JButton(title);
-        int size = 50;
-        button.setPreferredSize(new Dimension(size, size));
-        button.setBackground(new Color(220, 220, 220));
-        button.setFont(new Font("Arial", Font.PLAIN, 14));
-        button.setVisible(isVisible);
+        setButtonDefaults(button, isVisible);
 
         if (menuType == MenuType.color) {
             button.addActionListener(e -> {
@@ -45,6 +44,16 @@ public class MenuFactory {
         return button;
     }
 
+    private static void setButtonDefaults(JButton button, boolean isVisible) {
+        button.setPreferredSize(new Dimension(BUTTON_SIZE, BUTTON_SIZE));
+        button.setMaximumSize(new Dimension(BUTTON_SIZE, BUTTON_SIZE));
+        button.setMinimumSize(new Dimension(BUTTON_SIZE, BUTTON_SIZE));
+        button.setSize(new Dimension(BUTTON_SIZE, BUTTON_SIZE));
+        button.setBackground(BUTTON_COLOR);
+        button.setFont(BUTTON_FONT);
+        button.setVisible(isVisible);
+    }
+
     public static JButton createMenu(String title, MenuType menuType, boolean isVisible, ActionListener listener) {
         return createMenu(title, null, menuType, isVisible, listener);
     }
@@ -55,11 +64,7 @@ public class MenuFactory {
         }
 
         JButton button = new JButton(title);
-        int size = 50;
-        button.setPreferredSize(new Dimension(size, size));
-        button.setBackground(new Color(220, 220, 220));
-        button.setFont(new Font("Arial", Font.PLAIN, 14));
-        button.setVisible(isVisible);
+        setButtonDefaults(button, isVisible);
 
         button.addActionListener(e -> {
             JPopupMenu popupMenu = createSliderMenu(title, min, max, current, listener);
@@ -80,6 +85,8 @@ public class MenuFactory {
 
     private static JPopupMenu createGenericMenu(Enum<?>[] items, ActionListener listener) {
         JPopupMenu popupMenu = new JPopupMenu();
+        popupMenu.setPreferredSize(new Dimension(BUTTON_SIZE, BUTTON_SIZE * items.length / 2));
+
         for (Enum<?> item : items) {
             JMenuItem menuItem = new JMenuItem(item.name());
             menuItem.setActionCommand(item.name());
@@ -91,11 +98,16 @@ public class MenuFactory {
 
     private static JPopupMenu createSliderMenu(String title, int min, int max, int current, ActionListener listener) {
         JPopupMenu popupMenu = new JPopupMenu();
+        popupMenu.setPreferredSize(new Dimension(BUTTON_SIZE * 2, BUTTON_SIZE));
 
         JSlider slider = new JSlider(min, max, current);
         slider.setPaintTicks(true);
         slider.setPaintLabels(true);
         slider.setMajorTickSpacing((max - min) / 5);
+
+        slider.setPreferredSize(new Dimension(BUTTON_SIZE * 2 - 20, 50));
+        slider.setMinimumSize(new Dimension(BUTTON_SIZE * 2 - 20, 50));
+        slider.setMaximumSize(new Dimension(BUTTON_SIZE * 2 - 20, 50));
 
         slider.addChangeListener(e -> {
             if (!slider.getValueIsAdjusting()) {
@@ -104,14 +116,21 @@ public class MenuFactory {
             }
         });
 
-        popupMenu.add(slider);
+        JPanel sliderPanel = new JPanel(new BorderLayout());
+        sliderPanel.setPreferredSize(new Dimension(BUTTON_SIZE * 2 - 10, 60));
+        sliderPanel.add(slider, BorderLayout.CENTER);
+
+        popupMenu.add(sliderPanel);
         return popupMenu;
     }
 
     private static JPopupMenu createColorMenu(ActionListener listener) {
         JPopupMenu popupMenu = new JPopupMenu();
+        popupMenu.setPreferredSize(new Dimension(BUTTON_SIZE, BUTTON_SIZE));
 
         JButton colorButton = new JButton("Choose Color");
+        colorButton.setPreferredSize(new Dimension(BUTTON_SIZE - 20, BUTTON_SIZE / 2));
+
         colorButton.addActionListener(e -> {
             Color selectedColor = JColorChooser.showDialog(null, "Choose a Color", Color.BLACK);
             if (selectedColor != null) {
