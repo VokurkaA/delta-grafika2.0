@@ -90,8 +90,10 @@ public class Polygon extends Shape {
         g.setColor(color);
         Rasterizer rasterizer = new SimpleLineRasterizer();
         switch (lineType) {
+            case solid -> rasterizer = new SimpleLineRasterizer();
             case dashed -> rasterizer = new DashedLineRasterizer();
             case dotted -> rasterizer = new DottedLineRasterizer();
+            default -> throw new IllegalArgumentException("Unexpected value: " + lineType);
         }
 
         for (int i = 0; i < n - 1; i++) {

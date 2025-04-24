@@ -83,8 +83,10 @@ public class Line extends Shape {
     public void rasterize(Graphics g) {
         Rasterizer rasterizer = new SimpleLineRasterizer();
         switch (lineType) {
+            case solid -> rasterizer = new SimpleLineRasterizer();
             case dashed -> rasterizer = new DashedLineRasterizer();
             case dotted -> rasterizer = new DottedLineRasterizer();
+            default -> throw new IllegalArgumentException("Unexpected value: " + lineType);
         }
         rasterizer.rasterize(g, this);
     }

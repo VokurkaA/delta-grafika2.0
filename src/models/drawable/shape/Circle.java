@@ -69,8 +69,10 @@ public class Circle extends Shape {
     public void rasterize(Graphics g) {
         Rasterizer rasterizer = new SimpleCircleRasterizer();
         switch (lineType) {
+            case solid -> rasterizer = new SimpleCircleRasterizer();
             case dashed -> rasterizer = new DashedCircleRasterizer();
             case dotted -> rasterizer = new DottedCircleRasterizer();
+            default -> throw new IllegalArgumentException("Unexpected value: " + lineType);
         }
         rasterizer.rasterize(g, this);
     }
