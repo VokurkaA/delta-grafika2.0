@@ -25,6 +25,7 @@ public class MenuFactory {
     public static JButton createMenu(String title, Enum<?>[] items, MenuType menuType, boolean isVisible, ActionListener listener) {
         JButton button = new JButton(title);
         setButtonDefaults(button, isVisible);
+        button.setToolTipText(title);
 
         if (menuType == MenuType.color) {
             button.addActionListener(e -> {
@@ -45,8 +46,13 @@ public class MenuFactory {
     }
 
     public static JButton createMenuWithIcon(String title, Icon icon, Enum<?>[] items, MenuType menuType, boolean isVisible, ActionListener listener) {
+        return createMenuWithIcon(title, title, icon, items, menuType, isVisible, listener);
+    }
+
+    public static JButton createMenuWithIcon(String title, String tooltip, Icon icon, Enum<?>[] items, MenuType menuType, boolean isVisible, ActionListener listener) {
         JButton button = new JButton(title, icon);
         setButtonDefaults(button, isVisible);
+        button.setToolTipText(tooltip);
 
         button.setVerticalTextPosition(SwingConstants.BOTTOM);
         button.setHorizontalTextPosition(SwingConstants.CENTER);
@@ -70,14 +76,19 @@ public class MenuFactory {
     }
 
     public static JButton createMenuWithIcon(String title, Icon icon, MenuType menuType, int min, int max, int initialValue, boolean isVisible, ActionListener listener) {
+        return createMenuWithIcon(title, title, icon, menuType, min, max, initialValue, isVisible, listener);
+    }
+
+    public static JButton createMenuWithIcon(String title, String tooltip, Icon icon, MenuType menuType, int min, int max, int initialValue, boolean isVisible, ActionListener listener) {
         if (menuType != MenuType.slider) {
-            return createMenuWithIcon(title, icon, null, menuType, isVisible, listener);
+            return createMenuWithIcon(title, tooltip, icon, null, menuType, isVisible, listener);
         }
 
         final int[] currentValue = {initialValue};
 
         JButton button = new JButton(title, icon);
         setButtonDefaults(button, isVisible);
+        button.setToolTipText(tooltip);
 
         button.setVerticalTextPosition(SwingConstants.BOTTOM);
         button.setHorizontalTextPosition(SwingConstants.CENTER);
@@ -95,8 +106,13 @@ public class MenuFactory {
     }
 
     public static JButton createMenuWithIcon(String title, Icon icon, MenuType menuType, boolean isVisible, ActionListener listener) {
+        return createMenuWithIcon(title, title, icon, menuType, isVisible, listener);
+    }
+
+    public static JButton createMenuWithIcon(String title, String tooltip, Icon icon, MenuType menuType, boolean isVisible, ActionListener listener) {
         JButton button = new JButton(title, icon);
         setButtonDefaults(button, isVisible);
+        button.setToolTipText(tooltip);
 
         button.setVerticalTextPosition(SwingConstants.BOTTOM);
         button.setHorizontalTextPosition(SwingConstants.CENTER);
