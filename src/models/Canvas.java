@@ -4,11 +4,16 @@ import enums.DrawingShape;
 import models.drawable.Point;
 import models.drawable.shape.Shape;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -133,5 +138,45 @@ public class Canvas extends JFrame {
         this.fillLayer = newFillLayer;
 
         repaint();
+    }
+
+    public void exportCanvas() {
+        int width = panel.getWidth();
+        int height = panel.getHeight();
+        BufferedImage exportImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+
+        Graphics2D g = exportImage.createGraphics();
+        g.setColor(panel.getBackground());
+        g.fillRect(0, 0, width, height);
+
+        g.drawImage(fillLayer, 0, 0, null);
+
+        for (Shape shape : shapes) {
+            shape.rasterize(g);
+        }
+
+        g.dispose();
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd-HHmmss");
+        String filename = "delta-drawing-" + LocalDateTime.now().format(formatter) + ".png";
+
+        JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setSelectedFile(new File(filename));
+        int choice = fileChooser.showSaveDialog(this);
+
+        if (choice == JFileChooser.APPROVE_OPTION) {
+            File file = fileChooser.getSelectedFile();
+
+            if (!file.getName().toLowerCase().endsWith(".png")) {
+                file = new File(file.getAbsolutePath() + ".png");
+            }
+
+            try {
+                ImageIO.write(exportImage, "png", file);
+                JOptionPane.showMessageDialog(this, "Image exported successfully to: " + file.getAbsolutePath(), "Export Successful", JOptionPane.INFORMATION_MESSAGE);
+            } catch (IOException e) {
+                JOptionPane.showMessageDialog(this, "Failed to export image: " + e.getMessage(), "Export Failed", JOptionPane.ERROR_MESSAGE);
+            }
+        }
     }
 }

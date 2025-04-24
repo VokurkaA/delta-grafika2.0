@@ -21,14 +21,18 @@ public class ToolBar extends JToolBar {
         add(MenuFactory.createMenu("Canvas", CanvasMenuOptions.values(), MenuType.generic, true, e -> {
             switch (CanvasMenuOptions.valueOf(e.getActionCommand())) {
                 case clear -> clearCanvas.run();
-                case export -> System.out.println("Export triggered!");
+                case export -> {
+                    Container topLevelAncestor = getTopLevelAncestor();
+                    if (topLevelAncestor instanceof Canvas) {
+                        ((Canvas) topLevelAncestor).exportCanvas();
+                    }
+                }
             }
         }));
 
         add(MenuFactory.createMenu("Tools", DrawingTool.values(), MenuType.generic, true, e -> {
             drawingParams.drawingTool = ToolFactory.getToolByEnum(DrawingTool.valueOf(e.getActionCommand()));
             drawingParams.movingShape = null;
-            System.out.println("Tool selected: " + e.getActionCommand());
 
             updateButtonVisibility(drawingParams.drawingTool);
         }));
@@ -41,18 +45,11 @@ public class ToolBar extends JToolBar {
         toolButtons.put("Line", lineButton);
         add(lineButton);
 
-        JButton thicknessButton = MenuFactory.createMenu("Thickness", MenuType.slider, 1, 10, drawingParams.lineWidth, true, e -> {
-            drawingParams.lineWidth = Integer.parseInt(e.getActionCommand());
-            System.out.println("Thickness selected: " + drawingParams.lineWidth);
-        });
+        JButton thicknessButton = MenuFactory.createMenu("Thickness", MenuType.slider, 1, 10, drawingParams.lineWidth, true, e -> drawingParams.lineWidth = Integer.parseInt(e.getActionCommand()));
         toolButtons.put("Thickness", thicknessButton);
         add(thicknessButton);
 
-        JButton colorButton = MenuFactory.createMenu("Color", MenuType.color, true, e -> {
-            Color selectedColor = new Color(Integer.parseInt(e.getActionCommand()));
-            drawingParams.drawingColor = selectedColor;
-            System.out.println("Color chosen: " + selectedColor);
-        });
+        JButton colorButton = MenuFactory.createMenu("Color", MenuType.color, true, e -> drawingParams.drawingColor = new Color(Integer.parseInt(e.getActionCommand())));
         toolButtons.put("Color", colorButton);
         add(colorButton);
 
