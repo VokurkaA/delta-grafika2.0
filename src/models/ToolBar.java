@@ -5,7 +5,6 @@ import models.factory.MenuFactory;
 import models.factory.ToolFactory;
 import models.tools.EraserTool;
 import models.tools.ShapeTool;
-import models.tools.Tool;
 import utils.IconLoader;
 
 import javax.swing.*;
@@ -22,7 +21,7 @@ public class ToolBar extends JToolBar {
         super(JToolBar.VERTICAL);
         setFloatable(false);
 
-        add(MenuFactory.createMenuWithIcon("Canvas", "Canvas", IconLoader.getIcon("canvas", ICON_SIZE), CanvasMenuOptions.values(), MenuType.generic, true, e -> {
+        add(MenuFactory.createMenu("Canvas", "Canvas", IconLoader.getIcon("canvas", ICON_SIZE), CanvasMenuOptions.values(), MenuType.generic, true, e -> {
             switch (CanvasMenuOptions.valueOf(e.getActionCommand())) {
                 case clear -> clearCanvas.run();
                 case export -> {
@@ -34,45 +33,26 @@ public class ToolBar extends JToolBar {
             }
         }));
 
-        add(MenuFactory.createMenuWithIcon("Tools", "Select a drawing tool", IconLoader.getIcon("tools", ICON_SIZE), DrawingTool.values(), MenuType.generic, true, e -> {
+        JButton toolsButton = MenuFactory.createToolSelectionButton("Tools", "Select a drawing tool", IconLoader.getIcon("tools", ICON_SIZE), DrawingTool.values(), MenuType.generic, true, e -> {
             drawingParams.drawingTool = ToolFactory.getToolByEnum(DrawingTool.valueOf(e.getActionCommand()));
             drawingParams.movingShape = null;
-            updateButtonVisibility(drawingParams.drawingTool);
-        }));
+        }, toolButtons);
+        add(toolsButton);
 
-        JButton shapesButton = MenuFactory.createMenuWithIcon("Shapes", "Choose a shape", IconLoader.getIcon("shapes", ICON_SIZE), DrawingShape.values(), MenuType.generic, (drawingParams.drawingTool instanceof ShapeTool), e -> changeShape.accept(DrawingShape.valueOf(e.getActionCommand())));
+        JButton shapesButton = MenuFactory.createMenu("Shapes", "Choose a shape", IconLoader.getIcon("shapes", ICON_SIZE), DrawingShape.values(), MenuType.generic, (drawingParams.drawingTool instanceof ShapeTool), e -> changeShape.accept(DrawingShape.valueOf(e.getActionCommand())));
         toolButtons.put("Shapes", shapesButton);
         add(shapesButton);
 
-        JButton lineButton = MenuFactory.createMenuWithIcon("Line", "Select line style", IconLoader.getIcon("line", ICON_SIZE), LineType.values(), MenuType.generic, (drawingParams.drawingTool instanceof ShapeTool), e -> drawingParams.lineType = LineType.valueOf(e.getActionCommand()));
+        JButton lineButton = MenuFactory.createMenu("Line", "Select line style", IconLoader.getIcon("line", ICON_SIZE), LineType.values(), MenuType.generic, (drawingParams.drawingTool instanceof ShapeTool), e -> drawingParams.lineType = LineType.valueOf(e.getActionCommand()));
         toolButtons.put("Line", lineButton);
         add(lineButton);
 
-        JButton thicknessButton = MenuFactory.createMenuWithIcon("Width", "Adjust line thickness", IconLoader.getIcon("thickness", ICON_SIZE), MenuType.slider, 1, 25, drawingParams.lineWidth, true, e -> drawingParams.lineWidth = Integer.parseInt(e.getActionCommand()));
+        JButton thicknessButton = MenuFactory.createMenu("Width", "Adjust line thickness", IconLoader.getIcon("thickness", ICON_SIZE), MenuType.slider, 1, 25, drawingParams.lineWidth, true, e -> drawingParams.lineWidth = Integer.parseInt(e.getActionCommand()));
         toolButtons.put("Thickness", thicknessButton);
         add(thicknessButton);
 
-        JButton colorButton = MenuFactory.createMenuWithIcon("Color", "Choose drawing color", IconLoader.getIcon("color", ICON_SIZE), MenuType.color, !(drawingParams.drawingTool instanceof EraserTool), e -> drawingParams.drawingColor = new Color(Integer.parseInt(e.getActionCommand())));
+        JButton colorButton = MenuFactory.createMenu("Color", "Choose drawing color", IconLoader.getIcon("color", ICON_SIZE), MenuType.color, !(drawingParams.drawingTool instanceof EraserTool), e -> drawingParams.drawingColor = new Color(Integer.parseInt(e.getActionCommand())));
         toolButtons.put("Color", colorButton);
         add(colorButton);
-
-        updateButtonVisibility(drawingParams.drawingTool);
-    }
-
-    private void updateButtonVisibility(Tool selectedTool) {
-        boolean showShapeButtons = (selectedTool instanceof ShapeTool);
-
-        toolButtons.get("Shapes").setVisible(showShapeButtons);
-        toolButtons.get("Line").setVisible(showShapeButtons);
-
-        SwingUtilities.invokeLater(() -> {
-            Container topLevelAncestor = getTopLevelAncestor();
-            if (topLevelAncestor instanceof Canvas) {
-                ((Canvas) topLevelAncestor).getDrawingPanel().requestFocusInWindow();
-            }
-        });
-
-        revalidate();
-        repaint();
     }
 }
