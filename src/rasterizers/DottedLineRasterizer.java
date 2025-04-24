@@ -7,10 +7,14 @@ import java.awt.*;
 
 public class DottedLineRasterizer implements Rasterizer {
     public void rasterize(Graphics g, Shape shape) {
+        rasterize(g, shape, shape.color);
+    }
+
+    public void rasterize(Graphics g, Shape shape, Color color) {
         if (!(shape instanceof Line line)) return;
         if (line.getA().equals(line.getB())) return;
 
-        g.setColor(shape.color);
+        g.setColor(color);
 
         int dx = line.getB().getX() - line.getA().getX();
         int dy = line.getB().getY() - line.getA().getY();

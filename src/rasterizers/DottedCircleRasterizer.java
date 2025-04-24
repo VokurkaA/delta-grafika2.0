@@ -8,6 +8,10 @@ import java.awt.*;
 
 public class DottedCircleRasterizer implements Rasterizer {
     public void rasterize(Graphics g, Shape shape) {
+        rasterize(g, shape, shape.color);
+    }
+
+    public void rasterize(Graphics g, Shape shape, Color color) {
         if (!(shape instanceof Circle circle)) return;
 
         double radius = Point.getDistance(circle.points.get(1), circle.points.getFirst());
@@ -17,7 +21,7 @@ public class DottedCircleRasterizer implements Rasterizer {
         int centerX = circle.getCenter().getX();
         int centerY = circle.getCenter().getY();
 
-        g.setColor(shape.color);
+        g.setColor(color);
         g.fillRect(centerX, centerY, 1, 1);
 
         int P = 1 - (int) radius;

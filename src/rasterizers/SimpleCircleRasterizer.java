@@ -8,6 +8,10 @@ import java.awt.*;
 
 public class SimpleCircleRasterizer implements Rasterizer {
     public void rasterize(Graphics g, Shape shape) {
+        rasterize(g, shape, shape.color);
+    }
+
+    public void rasterize(Graphics g, Shape shape, Color color) {
         if (!(shape instanceof Circle circle)) return;
 
 
@@ -18,7 +22,7 @@ public class SimpleCircleRasterizer implements Rasterizer {
         int centerX = circle.getCenter().getX();
         int centerY = circle.getCenter().getY();
 
-        g.setColor(shape.color);
+        g.setColor(color);
         g.fillRect(centerX, centerY, shape.thickness, shape.thickness);
 
         g.fillRect(x + centerX, y + centerY, shape.thickness, shape.thickness);

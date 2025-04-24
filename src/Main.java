@@ -81,9 +81,6 @@ public class Main {
             @Override
             public void keyPressed(KeyEvent e) {
                 switch (e.getKeyCode()) {
-                    case KeyEvent.VK_C:
-                        canvas.clear();
-                        break;
                     case KeyEvent.VK_SHIFT:
                         drawingParams.doAlignLine = true;
                         break;
