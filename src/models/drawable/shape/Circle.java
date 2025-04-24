@@ -11,15 +11,16 @@ import rasterizers.SimpleCircleRasterizer;
 import java.awt.*;
 
 public class Circle extends Shape {
-    public Circle(Point a, Point b, Color color, LineType lineType) {
+    public Circle(Point a, Point b, Color color, LineType lineType, int thickness) {
         points.add(a);
         points.add(b);
         this.color = color;
         this.lineType = lineType;
+        this.thickness = thickness;
     }
 
     public Circle(Point a, DrawingParams drawingParams) {
-        this(a, new Point(a.getX(), a.getY()), drawingParams.drawingColor, drawingParams.lineType);
+        this(a, new Point(a.getX(), a.getY()), drawingParams.drawingColor, drawingParams.lineType, drawingParams.lineWidth);
     }
 
     @Override

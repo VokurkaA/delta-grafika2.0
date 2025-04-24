@@ -58,16 +58,22 @@ public class MenuFactory {
         return createMenu(title, null, menuType, isVisible, listener);
     }
 
-    public static JButton createMenu(String title, MenuType menuType, int min, int max, int current, boolean isVisible, ActionListener listener) {
+    public static JButton createMenu(String title, MenuType menuType, int min, int max, int initialValue, boolean isVisible, ActionListener listener) {
         if (menuType != MenuType.slider) {
             return createMenu(title, null, menuType, isVisible, listener);
         }
+
+        final int[] currentValue = {initialValue};
 
         JButton button = new JButton(title);
         setButtonDefaults(button, isVisible);
 
         button.addActionListener(e -> {
-            JPopupMenu popupMenu = createSliderMenu(title, min, max, current, listener);
+            JPopupMenu popupMenu = createSliderMenu(title, min, max, currentValue[0], evt -> {
+                int newValue = Integer.parseInt(evt.getActionCommand());
+                currentValue[0] = newValue;
+                listener.actionPerformed(evt);
+            });
             popupMenu.show(button, button.getWidth(), 0);
         });
 

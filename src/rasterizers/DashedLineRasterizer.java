@@ -28,7 +28,8 @@ public class DashedLineRasterizer implements Rasterizer {
         float y = line.getA().getY();
 
         boolean isDrawingSolid = true;
-        int dashedLength = 10;
+        int dashedLength = Math.max(5, shape.thickness * 5);
+
         for (int i = 0; i < step; i++) {
             if (i % dashedLength == 0) {
                 g.setColor(isDrawingSolid ? color : Color.black);

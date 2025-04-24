@@ -11,12 +11,12 @@ import java.util.List;
 
 public class Rectangle extends Polygon {
 
-    public Rectangle(List<Point> points, Color color, LineType lineType) {
-        super(points, color, lineType);
+    public Rectangle(List<Point> points, Color color, LineType lineType, int thickness) {
+        super(points, color, lineType, thickness);
     }
 
     public Rectangle(Point a, DrawingParams drawingParams) {
-        this(new ArrayList<>(Arrays.asList(a, new Point(a.getX(), a.getY()), new Point(a.getX(), a.getY()), new Point(a.getX(), a.getY()))), drawingParams.drawingColor, drawingParams.lineType);
+        this(new ArrayList<>(Arrays.asList(a, new Point(a.getX(), a.getY()), new Point(a.getX(), a.getY()), new Point(a.getX(), a.getY()))), drawingParams.drawingColor, drawingParams.lineType, drawingParams.lineWidth);
     }
 
     @Override
@@ -83,7 +83,7 @@ public class Rectangle extends Polygon {
 
         for (int i = 0; i < points.size(); i++) {
             int nextIndex = (i + 1) % points.size();
-            Line l = new Line(points.get(i), points.get(nextIndex), color, lineType);
+            Line l = new Line(points.get(i), points.get(nextIndex), color, lineType, thickness);
             l.rasterize(g);
         }
     }
@@ -94,7 +94,7 @@ public class Rectangle extends Polygon {
 
         for (int i = 0; i < points.size(); i++) {
             int nextIndex = (i + 1) % points.size();
-            Line l = new Line(points.get(i), points.get(nextIndex), color, lineType);
+            Line l = new Line(points.get(i), points.get(nextIndex), color, lineType, thickness);
             double distance = l.getNearestDistance(click);
             minDistance = Math.min(minDistance, distance);
         }

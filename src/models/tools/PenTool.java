@@ -37,7 +37,7 @@ public class PenTool implements Tool {
         g2d.setColor(drawingParams.drawingColor);
 
         Rasterizer rasterizer = new SimpleLineRasterizer();
-        Line line = new Line(lastPoint, currentPoint, drawingParams.drawingColor, drawingParams.lineType);
+        Line line = new Line(lastPoint, currentPoint, drawingParams.drawingColor, drawingParams.lineType, drawingParams.lineWidth);
         line.thickness = drawingParams.lineWidth;
         rasterizer.rasterize(g2d, line);
 

@@ -9,8 +9,8 @@ import java.util.List;
 
 public class Square extends Rectangle {
 
-    public Square(List<Point> points, Color color, LineType lineType) {
-        super(points, color, lineType);
+    public Square(List<Point> points, Color color, LineType lineType, int thickness) {
+        super(points, color, lineType, thickness);
         ensureEqualSides();
     }
 

@@ -26,7 +26,7 @@ public class DashedCircleRasterizer implements Rasterizer {
         g.fillRect(centerX, centerY, 1, 1);
 
         int P = 1 - (int) radius;
-        int dashLength = 10;
+        int dashLength = Math.max(5, shape.thickness * 4);
         int totalCounter = 0;
 
         while (x > y) {

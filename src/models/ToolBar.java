@@ -65,6 +65,13 @@ public class ToolBar extends JToolBar {
         toolButtons.get("Shapes").setVisible(showShapeButtons);
         toolButtons.get("Line").setVisible(showShapeButtons);
 
+        SwingUtilities.invokeLater(() -> {
+            Container topLevelAncestor = getTopLevelAncestor();
+            if (topLevelAncestor instanceof Canvas) {
+                ((Canvas) topLevelAncestor).getDrawingPanel().requestFocusInWindow();
+            }
+        });
+
         revalidate();
         repaint();
     }

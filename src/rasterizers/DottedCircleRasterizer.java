@@ -25,7 +25,7 @@ public class DottedCircleRasterizer implements Rasterizer {
         g.fillRect(centerX, centerY, 1, 1);
 
         int P = 1 - (int) radius;
-        int dotSpacing = 5;
+        int dotSpacing = Math.max(2, shape.thickness * 2);
         int stepCounter = 0;
 
         while (x > y) {

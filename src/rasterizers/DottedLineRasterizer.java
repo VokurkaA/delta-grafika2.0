@@ -26,7 +26,8 @@ public class DottedLineRasterizer implements Rasterizer {
         float x = line.getA().getX();
         float y = line.getA().getY();
 
-        int dotSpacing = 5;
+        int dotSpacing = Math.max(2, shape.thickness * 3);
+
         for (int i = 0; i < step; i++) {
             if (i % dotSpacing == 0) {
                 g.fillRect(Math.round(x), Math.round(y), shape.thickness, shape.thickness);

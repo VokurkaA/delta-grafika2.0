@@ -8,65 +8,75 @@ import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
-import java.util.Stack;
+import java.util.LinkedList;
+import java.util.Queue;
 
 public class BucketTool implements Tool {
     @Override
     public void onMousePress(Canvas canvas, MouseEvent e, DrawingParams drawingParams) {
-        Point clickPoint = new Point(e.getX(), e.getY());
+        int x = e.getX();
+        int y = e.getY();
         BufferedImage fillLayer = canvas.getFillLayer();
 
-        int targetRGB = fillLayer.getRGB(clickPoint.getX(), clickPoint.getY());
+        if (x < 0 || x >= fillLayer.getWidth() || y < 0 || y >= fillLayer.getHeight()) {
+            return;
+        }
+
+        int targetRGB = fillLayer.getRGB(x, y);
         Color targetColor = new Color(targetRGB, true);
 
-        floodFill(fillLayer, clickPoint.getX(), clickPoint.getY(), targetColor, drawingParams.drawingColor);
+        if (targetColor.equals(drawingParams.drawingColor)) {
+            return;
+        }
+
+        floodFill(fillLayer, x, y, targetColor, drawingParams.drawingColor);
         canvas.repaint();
     }
 
     @Override
     public void onMouseMove(Canvas canvas, MouseEvent e, DrawingParams drawingParams) {
-
     }
 
     @Override
     public void onMouseDrag(Canvas canvas, MouseEvent e, DrawingParams drawingParams) {
-
     }
 
     @Override
     public void onKeyPress(Canvas canvas, KeyEvent e, DrawingParams drawingParams) {
-
     }
 
     @Override
     public void onKeyRelease(Canvas canvas, KeyEvent e, DrawingParams drawingParams) {
-
     }
 
     private void floodFill(BufferedImage image, int x, int y, Color targetColor, Color replacementColor) {
-        Stack<Point> stack = new Stack<>();
-        stack.push(new Point(x, y));
-
         int width = image.getWidth();
         int height = image.getHeight();
         int targetRGB = targetColor.getRGB();
         int replacementRGB = replacementColor.getRGB();
 
-        while (!stack.isEmpty()) {
-            Point p = stack.pop();
+        Queue<Point> queue = new LinkedList<>();
+        queue.add(new Point(x, y));
+
+        while (!queue.isEmpty()) {
+            Point p = queue.poll();
             int currentX = p.getX();
             int currentY = p.getY();
 
-            if (currentX < 0 || currentX >= width || currentY < 0 || currentY >= height) continue;
+            if (currentX < 0 || currentX >= width || currentY < 0 || currentY >= height) {
+                continue;
+            }
 
-            if (image.getRGB(currentX, currentY) != targetRGB) continue;
+            if (image.getRGB(currentX, currentY) != targetRGB) {
+                continue;
+            }
 
             image.setRGB(currentX, currentY, replacementRGB);
 
-            stack.push(new Point(currentX + 1, currentY));
-            stack.push(new Point(currentX - 1, currentY));
-            stack.push(new Point(currentX, currentY + 1));
-            stack.push(new Point(currentX, currentY - 1));
+            if (currentX + 1 < width) queue.add(new Point(currentX + 1, currentY));
+            if (currentX - 1 >= 0) queue.add(new Point(currentX - 1, currentY));
+            if (currentY + 1 < height) queue.add(new Point(currentX, currentY + 1));
+            if (currentY - 1 >= 0) queue.add(new Point(currentX, currentY - 1));
         }
     }
 }

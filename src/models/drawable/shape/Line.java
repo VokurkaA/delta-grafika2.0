@@ -11,15 +11,16 @@ import rasterizers.SimpleLineRasterizer;
 import java.awt.*;
 
 public class Line extends Shape {
-    public Line(Point a, Point b, Color color, LineType lineType) {
+    public Line(Point a, Point b, Color color, LineType lineType, int thickness) {
         points.add(a);
         points.add(b);
         this.color = color;
         this.lineType = lineType;
+        this.thickness = thickness;
     }
 
     public Line(Point a, DrawingParams drawingParams) {
-        this(a, new Point(a.getX(), a.getY()), drawingParams.drawingColor, drawingParams.lineType);
+        this(a, new Point(a.getX(), a.getY()), drawingParams.drawingColor, drawingParams.lineType, drawingParams.lineWidth);
     }
 
     public static Point alignPoint(Point a, Point b) {

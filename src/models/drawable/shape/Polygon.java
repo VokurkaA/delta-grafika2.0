@@ -16,14 +16,15 @@ import java.util.List;
 public class Polygon extends Shape {
     private static final int finishDistanceThreshold = 10;
 
-    public Polygon(List<Point> points, Color color, LineType lineType) {
+    public Polygon(List<Point> points, Color color, LineType lineType, int thickness) {
         this.points = points;
         this.color = color;
         this.lineType = lineType;
+        this.thickness = thickness;
     }
 
     public Polygon(Point a, DrawingParams drawingParams) {
-        this(new ArrayList<>(Arrays.asList(a, new Point(a.getX(), a.getY()))), drawingParams.drawingColor, drawingParams.lineType);
+        this(new ArrayList<>(Arrays.asList(a, new Point(a.getX(), a.getY()))), drawingParams.drawingColor, drawingParams.lineType, drawingParams.lineWidth);
     }
 
     @Override
@@ -97,11 +98,11 @@ public class Polygon extends Shape {
         }
 
         for (int i = 0; i < n - 1; i++) {
-            Line l = new Line(points.get(i), points.get(i + 1), color, lineType);
+            Line l = new Line(points.get(i), points.get(i + 1), color, lineType, thickness);
             rasterizer.rasterize(g, l);
             l.rasterize(g);
         }
-        if (isFinished) new Line(points.getLast(), points.getFirst(), color, lineType).rasterize(g);
+        if (isFinished) new Line(points.getLast(), points.getFirst(), color, lineType, thickness).rasterize(g);
     }
 
     @Override

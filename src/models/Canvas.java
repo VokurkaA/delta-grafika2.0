@@ -6,6 +6,8 @@ import models.drawable.shape.Shape;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
@@ -14,7 +16,7 @@ public class Canvas extends JFrame {
     private final JPanel panel;
     private final List<Shape> shapes = new ArrayList<>();
     private final DrawingParams drawingParams;
-    private final BufferedImage fillLayer;
+    private BufferedImage fillLayer;
 
     public Canvas(int width, int height, Color backgroundColor, DrawingParams drawingParams) {
         setTitle("DELTA grafika");
@@ -46,6 +48,13 @@ public class Canvas extends JFrame {
         ToolBar toolBar = new ToolBar(drawingParams, this::changeShape, this::clear);
         add(toolBar, BorderLayout.WEST);
         revalidate();
+
+        this.addComponentListener(new ComponentAdapter() {
+            @Override
+            public void componentResized(ComponentEvent e) {
+                handleResize();
+            }
+        });
     }
 
     public Shape getNearestShape(Point click) {
@@ -92,6 +101,12 @@ public class Canvas extends JFrame {
 
     public void clear() {
         shapes.clear();
+
+        Graphics2D g = fillLayer.createGraphics();
+        g.setComposite(AlphaComposite.Clear);
+        g.fillRect(0, 0, fillLayer.getWidth(), fillLayer.getHeight());
+        g.dispose();
+
         repaint();
     }
 
@@ -101,5 +116,22 @@ public class Canvas extends JFrame {
 
     public void removeShape(Shape shape) {
         shapes.remove(shape);
+    }
+
+    public void handleResize() {
+        BufferedImage oldFillLayer = this.fillLayer;
+
+        int newWidth = this.getWidth();
+        int newHeight = this.getHeight();
+        BufferedImage newFillLayer = new BufferedImage(newWidth, newHeight, BufferedImage.TYPE_INT_ARGB);
+
+        Graphics2D g = newFillLayer.createGraphics();
+        g.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+        g.drawImage(oldFillLayer, 0, 0, null);
+        g.dispose();
+
+        this.fillLayer = newFillLayer;
+
+        repaint();
     }
 }
