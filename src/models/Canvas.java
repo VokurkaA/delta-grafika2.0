@@ -4,6 +4,7 @@ import enums.DrawingShape;
 import models.drawable.Point;
 import models.drawable.shape.Shape;
 import models.tools.TextTool;
+import utils.CanvasSerializer;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -109,6 +110,10 @@ public class Canvas extends JFrame {
         return panel;
     }
 
+    public List<Shape> getShapes() {
+        return shapes;
+    }
+
     public void clear() {
         shapes.clear();
 
@@ -122,6 +127,10 @@ public class Canvas extends JFrame {
 
     public BufferedImage getFillLayer() {
         return fillLayer;
+    }
+
+    public void setFillLayer(BufferedImage newFillLayer) {
+        this.fillLayer = newFillLayer;
     }
 
     public void removeShape(Shape shape) {
@@ -181,6 +190,43 @@ public class Canvas extends JFrame {
                 JOptionPane.showMessageDialog(this, "Image exported successfully to: " + file.getAbsolutePath(), "Export Successful", JOptionPane.INFORMATION_MESSAGE);
             } catch (IOException e) {
                 JOptionPane.showMessageDialog(this, "Failed to export image: " + e.getMessage(), "Export Failed", JOptionPane.ERROR_MESSAGE);
+            }
+        }
+    }
+
+    public void save() {
+        JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setFileFilter(new javax.swing.filechooser.FileNameExtensionFilter("Delta Drawing Files (*.delta)", "delta"));
+        fileChooser.setSelectedFile(new File("drawing.delta"));
+        int choice = fileChooser.showSaveDialog(this);
+
+        if (choice == JFileChooser.APPROVE_OPTION) {
+            File file = fileChooser.getSelectedFile();
+
+            if (!file.getName().toLowerCase().endsWith(".delta")) {
+                file = new File(file.getAbsolutePath() + ".delta");
+            }
+
+            try {
+                CanvasSerializer.saveCanvas(this, file);
+                JOptionPane.showMessageDialog(this, "Drawing saved successfully to: " + file.getAbsolutePath(), "Save Successful", JOptionPane.INFORMATION_MESSAGE);
+            } catch (IOException e) {
+                JOptionPane.showMessageDialog(this, "Failed to save drawing: " + e.getMessage(), "Save Failed", JOptionPane.ERROR_MESSAGE);
+            }
+        }
+    }
+
+    public void open() {
+        JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setFileFilter(new javax.swing.filechooser.FileNameExtensionFilter("Delta Drawing Files (*.delta)", "delta"));
+        int choice = fileChooser.showOpenDialog(this);
+
+        if (choice == JFileChooser.APPROVE_OPTION) {
+            File file = fileChooser.getSelectedFile();
+            try {
+                CanvasSerializer.loadCanvas(this, file);
+            } catch (IOException e) {
+                JOptionPane.showMessageDialog(this, "Failed to open drawing: " + e.getMessage(), "Open Failed", JOptionPane.ERROR_MESSAGE);
             }
         }
     }

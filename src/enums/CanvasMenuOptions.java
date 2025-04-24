@@ -2,5 +2,7 @@ package enums;
 
 public enum CanvasMenuOptions {
     export,
-    clear
+    clear,
+    save,
+    open
 }

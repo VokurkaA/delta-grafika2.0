@@ -23,6 +23,10 @@ public class Circle extends Shape {
         this(a, new Point(a.getX(), a.getY()), drawingParams.drawingColor, drawingParams.lineType, drawingParams.lineWidth);
     }
 
+    public Circle() {
+        super();
+    }
+
     @Override
     public void move(Point click, DrawingParams drawingParams, boolean newPoint) {
         lineType = drawingParams.lineType;

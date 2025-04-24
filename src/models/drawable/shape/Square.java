@@ -19,6 +19,10 @@ public class Square extends Rectangle {
         ensureEqualSides();
     }
 
+    public Square() {
+        super();
+    }
+
     private void ensureEqualSides() {
         int sideLengthX = Math.abs(points.get(0).getX() - points.get(1).getX());
         int sideLengthY = Math.abs(points.get(0).getY() - points.get(3).getY());

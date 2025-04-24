@@ -29,6 +29,18 @@ public class ToolBar extends JToolBar {
                         ((Canvas) topLevelAncestor).exportCanvas();
                     }
                 }
+                case save -> {
+                    Container topLevelAncestor = getTopLevelAncestor();
+                    if (topLevelAncestor instanceof Canvas) {
+                        ((Canvas) topLevelAncestor).save();
+                    }
+                }
+                case open -> {
+                    Container topLevelAncestor = getTopLevelAncestor();
+                    if (topLevelAncestor instanceof Canvas) {
+                        ((Canvas) topLevelAncestor).open();
+                    }
+                }
             }
         }));
 

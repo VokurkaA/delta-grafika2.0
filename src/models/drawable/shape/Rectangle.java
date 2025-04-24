@@ -19,6 +19,10 @@ public class Rectangle extends Polygon {
         this(new ArrayList<>(Arrays.asList(a, new Point(a.getX(), a.getY()), new Point(a.getX(), a.getY()), new Point(a.getX(), a.getY()))), drawingParams.drawingColor, drawingParams.lineType, drawingParams.lineWidth);
     }
 
+    public Rectangle() {
+        super();
+    }
+
     @Override
     public void place(Point point, boolean doAlignLine) {
         Point first = points.getFirst();

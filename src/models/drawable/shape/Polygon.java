@@ -27,6 +27,10 @@ public class Polygon extends Shape {
         this(new ArrayList<>(Arrays.asList(a, new Point(a.getX(), a.getY()))), drawingParams.drawingColor, drawingParams.lineType, drawingParams.lineWidth);
     }
 
+    public Polygon() {
+        super();
+    }
+
     @Override
     public void place(Point point, boolean doAlignLine) {
         if (points.size() >= 3 && Math.abs(point.getX() - points.getFirst().getX()) < finishDistanceThreshold && Math.abs(point.getY() - points.getFirst().getY()) < finishDistanceThreshold) {

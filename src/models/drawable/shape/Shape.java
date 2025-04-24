@@ -6,6 +6,7 @@ import models.drawable.Drawable;
 import models.drawable.Point;
 
 import java.awt.*;
+import java.util.ArrayList;
 import java.util.Objects;
 
 public abstract class Shape extends Drawable {
@@ -13,6 +14,12 @@ public abstract class Shape extends Drawable {
     public int thickness = 1;
     public boolean isFinished = false;
     protected int movePointIndex = -1;
+
+    public Shape() {
+        this.points = new ArrayList<>();
+        this.color = Color.RED;
+        this.lineType = LineType.solid;
+    }
 
     public abstract void place(Point point, boolean doAlignLine);
 

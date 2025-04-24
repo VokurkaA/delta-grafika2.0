@@ -23,6 +23,10 @@ public class Line extends Shape {
         this(a, new Point(a.getX(), a.getY()), drawingParams.drawingColor, drawingParams.lineType, drawingParams.lineWidth);
     }
 
+    public Line() {
+        super();
+    }
+
     public static Point alignPoint(Point a, Point b) {
         float d = (float) Math.hypot(b.getX() - a.getX(), b.getY() - a.getY());
         float angle = (float) Math.toDegrees(Math.atan2(b.getY() - a.getY(), b.getX() - a.getX()));
