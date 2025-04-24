@@ -12,13 +12,14 @@ import java.awt.event.MouseEvent;
 
 public class Main {
     public static void main(String[] args) {
-        DrawingParams drawingParams = new DrawingParams(false, LineType.solid, DrawingShape.polygon, 1, Color.red, DrawingTool.shape);
+        DrawingParams drawingParams = new DrawingParams(false, LineType.solid, DrawingShape.polygon, 1, Color.red, DrawingTool.pen);
         Canvas canvas = new Canvas(1440, 1080, Color.black, drawingParams);
 
         MouseAdapter mouseAdapter = new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
                 drawingParams.drawingTool.onMousePress(canvas, e, drawingParams);
+                canvas.getDrawingPanel().requestFocusInWindow();
             }
 
             @Override

@@ -3,6 +3,7 @@ package models;
 import enums.DrawingShape;
 import models.drawable.Point;
 import models.drawable.shape.Shape;
+import models.tools.TextTool;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -38,6 +39,10 @@ public class Canvas extends JFrame {
 
                 for (Shape shape : shapes) {
                     shape.rasterize(g);
+                }
+
+                if (drawingParams.drawingTool instanceof TextTool) {
+                    ((TextTool) drawingParams.drawingTool).paintCurrentText(g, drawingParams);
                 }
             }
         };

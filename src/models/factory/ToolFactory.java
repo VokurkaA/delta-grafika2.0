@@ -12,6 +12,8 @@ public class ToolFactory {
         toolMap.put(DrawingTool.pen, PenTool::new);
         toolMap.put(DrawingTool.bucket, BucketTool::new);
         toolMap.put(DrawingTool.shape, ShapeTool::new);
+        toolMap.put(DrawingTool.text, TextTool::new);
+        toolMap.put(DrawingTool.eraser, EraserTool::new);
         toolMap.put(DrawingTool.rasterizer, RasterizerTool::new);
         toolMap.put(DrawingTool.moveTool, MoveTool::new);
     }

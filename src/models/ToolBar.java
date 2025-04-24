@@ -45,7 +45,7 @@ public class ToolBar extends JToolBar {
         toolButtons.put("Line", lineButton);
         add(lineButton);
 
-        JButton thicknessButton = MenuFactory.createMenu("Thickness", MenuType.slider, 1, 10, drawingParams.lineWidth, true, e -> drawingParams.lineWidth = Integer.parseInt(e.getActionCommand()));
+        JButton thicknessButton = MenuFactory.createMenu("Thickness", MenuType.slider, 1, 25, drawingParams.lineWidth, true, e -> drawingParams.lineWidth = Integer.parseInt(e.getActionCommand()));
         toolButtons.put("Thickness", thicknessButton);
         add(thicknessButton);
 

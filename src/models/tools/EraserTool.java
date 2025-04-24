@@ -1,48 +1,54 @@
 package models.tools;
 
+import enums.LineType;
 import models.Canvas;
 import models.DrawingParams;
 import models.drawable.Point;
 import models.drawable.shape.Line;
-import rasterizers.Rasterizer;
-import rasterizers.SimpleLineRasterizer;
 
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 
-public class PenTool implements Tool {
+public class EraserTool implements Tool {
     private Point lastPoint = null;
 
     @Override
     public void onMousePress(Canvas canvas, MouseEvent e, DrawingParams drawingParams) {
         lastPoint = new Point(e.getX(), e.getY());
         Graphics2D g2d = canvas.getFillLayer().createGraphics();
-        g2d.setColor(drawingParams.drawingColor);
-        g2d.fillRect(lastPoint.getX(), lastPoint.getY(), drawingParams.lineWidth, drawingParams.lineWidth);
+        g2d.setComposite(AlphaComposite.Clear);
+
+        int eraserSize = drawingParams.lineWidth * 2;
+        int x = lastPoint.getX() - eraserSize / 2;
+        int y = lastPoint.getY() - eraserSize / 2;
+        g2d.fillOval(x, y, eraserSize, eraserSize);
+
         g2d.dispose();
         canvas.repaint();
-    }
-
-    @Override
-    public void onMouseMove(Canvas canvas, MouseEvent e, DrawingParams drawingParams) {
     }
 
     @Override
     public void onMouseDrag(Canvas canvas, MouseEvent e, DrawingParams drawingParams) {
         Point currentPoint = new Point(e.getX(), e.getY());
 
-        Graphics2D g2d = canvas.getFillLayer().createGraphics();
-        g2d.setColor(drawingParams.drawingColor);
+        if (lastPoint != null) {
+            Line line = new Line(lastPoint, currentPoint, new Color(0, 0, 0, 0), LineType.solid, drawingParams.lineWidth);
+            Graphics2D g2d = canvas.getFillLayer().createGraphics();
+            g2d.setComposite(AlphaComposite.Clear);
+            g2d.setStroke(new BasicStroke(drawingParams.lineWidth * 2, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
 
-        Rasterizer rasterizer = new SimpleLineRasterizer();
-        Line line = new Line(lastPoint, currentPoint, drawingParams.drawingColor, drawingParams.lineType, drawingParams.lineWidth);
-        line.thickness = drawingParams.lineWidth;
-        rasterizer.rasterize(g2d, line);
+            g2d.drawLine(line.getA().getX(), line.getA().getY(), line.getB().getX(), line.getB().getY());
 
-        g2d.dispose();
+            g2d.dispose();
+        }
+
         lastPoint = currentPoint;
         canvas.repaint();
+    }
+
+    @Override
+    public void onMouseMove(Canvas canvas, MouseEvent e, DrawingParams drawingParams) {
     }
 
     @Override
