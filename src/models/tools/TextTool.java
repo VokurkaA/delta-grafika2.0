@@ -10,7 +10,7 @@ import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 
 public class TextTool implements Tool {
-    private final int CURSOR_BLINK_RATE = 500; // milliseconds
+    private final int CURSOR_BLINK_RATE = 500;
     private Point textPosition;
     private StringBuilder currentText = new StringBuilder();
     private boolean isEditing = false;

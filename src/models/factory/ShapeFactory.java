@@ -1,4 +1,3 @@
-// FILE: src/models/factory/ShapeFactory.java
 package models.factory;
 
 import enums.DrawingShape;
