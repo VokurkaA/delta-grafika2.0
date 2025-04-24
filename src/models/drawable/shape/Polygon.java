@@ -7,6 +7,7 @@ import rasterizers.DashedLineRasterizer;
 import rasterizers.DottedLineRasterizer;
 import rasterizers.Rasterizer;
 import rasterizers.SimpleLineRasterizer;
+import utils.SettingsManager;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -14,7 +15,7 @@ import java.util.Arrays;
 import java.util.List;
 
 public class Polygon extends Shape {
-    private static final int finishDistanceThreshold = 10;
+    private static final int finishDistanceThreshold = SettingsManager.getInt("tools.polygon.finishDistanceThreshold", 10);
 
     public Polygon(List<Point> points, Color color, LineType lineType, int thickness) {
         this.points = points;
@@ -93,7 +94,7 @@ public class Polygon extends Shape {
         if (n < 2) return;
 
         g.setColor(color);
-        Rasterizer rasterizer = new SimpleLineRasterizer();
+        Rasterizer rasterizer;
         switch (lineType) {
             case solid -> rasterizer = new SimpleLineRasterizer();
             case dashed -> rasterizer = new DashedLineRasterizer();

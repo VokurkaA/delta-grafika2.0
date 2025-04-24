@@ -1,0 +1,49 @@
+{
+  "app": {
+    "title": "DELTA grafika",
+    "isWindowResizable": true
+  },
+  "canvas": {
+    "width": 1440,
+    "height": 1080,
+    "backgroundColor": "#000000"
+  },
+  "drawing": {
+    "defaultLineWidth": 1,
+    "defaultColor": "#FF0000",
+    "defaultLineType": "solid",
+    "defaultShape": "polygon",
+    "defaultTool": "pen",
+    "thresholdDistance": 25,
+    "minLineWidth": 1,
+    "drawing.maxLineWidth": 25
+  },
+  "ui": {
+    "iconSize": 24,
+    "buttonSize": 50,
+    "buttonColor": "#DCDCDC",
+    "fontFamily": "Arial",
+    "fontSize": 14,
+    "fontStyle": 0
+  },
+  "tools": {
+    "eraser": {
+      "sizeMultiplier": 2
+    },
+    "text": {
+      "cursorBlinkRate": 500,
+      "fontSizeMultiplier": 12
+    },
+    "polygon": {
+      "finishDistanceThreshold": 10
+    },
+    "line": {
+      "dashedLength": 5,
+      "dottedSpacing": 2
+    },
+    "circle": {
+      "dashedLength": 5,
+      "dottedSpacing": 2
+    }
+  }
+}

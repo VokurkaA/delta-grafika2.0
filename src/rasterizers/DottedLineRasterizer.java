@@ -2,6 +2,7 @@ package rasterizers;
 
 import models.drawable.shape.Line;
 import models.drawable.shape.Shape;
+import utils.SettingsManager;
 
 import java.awt.*;
 
@@ -26,7 +27,8 @@ public class DottedLineRasterizer implements Rasterizer {
         float x = line.getA().getX();
         float y = line.getA().getY();
 
-        int dotSpacing = Math.max(2, shape.thickness * 3);
+        int dottedSpacing = SettingsManager.getInt("tools.line.dottedSpacing", 2);
+        int dotSpacing = Math.max(2, shape.thickness * dottedSpacing);
 
         for (int i = 0; i < step; i++) {
             if (i % dotSpacing == 0) {

@@ -6,6 +6,7 @@ import models.factory.ToolFactory;
 import models.tools.EraserTool;
 import models.tools.ShapeTool;
 import utils.IconLoader;
+import utils.SettingsManager;
 
 import javax.swing.*;
 import java.awt.*;
@@ -14,7 +15,7 @@ import java.util.Map;
 import java.util.function.Consumer;
 
 public class ToolBar extends JToolBar {
-    private static final int ICON_SIZE = 24;
+    private static final int ICON_SIZE = SettingsManager.getInt("ui.iconSize", 24);
 
     public ToolBar(DrawingParams drawingParams, Consumer<DrawingShape> changeShape, Runnable clearCanvas) {
         super(JToolBar.VERTICAL);
@@ -59,7 +60,10 @@ public class ToolBar extends JToolBar {
         toolButtons.put("Line", lineButton);
         add(lineButton);
 
-        JButton thicknessButton = MenuFactory.createMenu("Width", "Adjust line thickness", IconLoader.getIcon("thickness", ICON_SIZE), MenuType.slider, 1, 25, drawingParams.lineWidth, true, e -> drawingParams.lineWidth = Integer.parseInt(e.getActionCommand()));
+        int minThickness = SettingsManager.getInt("drawing.minLineWidth", 1);
+        int maxThickness = SettingsManager.getInt("drawing.maxLineWidth", 25);
+
+        JButton thicknessButton = MenuFactory.createMenu("Width", "Adjust line thickness", IconLoader.getIcon("thickness", ICON_SIZE), MenuType.slider, minThickness, maxThickness, drawingParams.lineWidth, true, e -> drawingParams.lineWidth = Integer.parseInt(e.getActionCommand()));
         toolButtons.put("Thickness", thicknessButton);
         add(thicknessButton);
 

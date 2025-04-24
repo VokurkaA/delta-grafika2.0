@@ -1,10 +1,6 @@
-import enums.DrawingShape;
-import enums.DrawingTool;
-import enums.LineType;
 import models.Canvas;
 import models.DrawingParams;
 
-import java.awt.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
@@ -12,8 +8,8 @@ import java.awt.event.MouseEvent;
 
 public class Main {
     public static void main(String[] args) {
-        DrawingParams drawingParams = new DrawingParams(false, LineType.solid, DrawingShape.polygon, 1, Color.red, DrawingTool.pen);
-        Canvas canvas = new Canvas(1440, 1080, Color.black, drawingParams);
+        DrawingParams drawingParams = new DrawingParams();
+        Canvas canvas = new Canvas(drawingParams);
 
         MouseAdapter mouseAdapter = new MouseAdapter() {
             @Override

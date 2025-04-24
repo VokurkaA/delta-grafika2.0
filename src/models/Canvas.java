@@ -5,6 +5,7 @@ import models.drawable.Point;
 import models.drawable.shape.Shape;
 import models.tools.TextTool;
 import utils.CanvasSerializer;
+import utils.SettingsManager;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -25,11 +26,18 @@ public class Canvas extends JFrame {
     private final DrawingParams drawingParams;
     private BufferedImage fillLayer;
 
-    public Canvas(int width, int height, Color backgroundColor, DrawingParams drawingParams) {
-        setTitle("DELTA grafika");
+    public Canvas(DrawingParams drawingParams) {
+
+        int width = SettingsManager.getInt("canvas.width", 1440);
+        int height = SettingsManager.getInt("canvas.height", 1080);
+        Color backgroundColor = SettingsManager.getColor("canvas.backgroundColor", Color.BLACK);
+
+        setTitle(SettingsManager.getString("app.title", "DELTA grafika"));
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(width, height);
         setLocationRelativeTo(null);
+
+        setResizable(SettingsManager.getBoolean("app.isWindowResizable", true));
 
         panel = new JPanel() {
             @Override
@@ -71,7 +79,7 @@ public class Canvas extends JFrame {
     public Shape getNearestShape(Point click) {
         Shape nearestShape = null;
         double minDistance = Double.MAX_VALUE;
-        int threshold = 25;
+        int threshold = SettingsManager.getInt("drawing.thresholdDistance", 25);
 
         for (Shape shape : shapes) {
             double distance = shape.getNearestDistance(click);

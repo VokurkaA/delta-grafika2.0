@@ -3,6 +3,7 @@ package models.tools;
 import models.Canvas;
 import models.DrawingParams;
 import models.drawable.Point;
+import utils.SettingsManager;
 
 import java.awt.*;
 import java.awt.event.KeyEvent;
@@ -10,7 +11,8 @@ import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 
 public class TextTool implements Tool {
-    private final int CURSOR_BLINK_RATE = 500;
+    private final int fontMultiplayer = SettingsManager.getInt("tools.text.fontSizeMultiplier", 12);
+    private final int CURSOR_BLINK_RATE = SettingsManager.getInt("tools.text.cursorBlinkRate", 500);
     private Point textPosition;
     private StringBuilder currentText = new StringBuilder();
     private boolean isEditing = false;
@@ -81,7 +83,7 @@ public class TextTool implements Tool {
         Graphics2D g2d = fillLayer.createGraphics();
         g2d.setColor(drawingParams.drawingColor);
 
-        Font font = new Font("SansSerif", Font.PLAIN, Math.max(12, drawingParams.lineWidth * 12));
+        Font font = new Font("SansSerif", Font.PLAIN, Math.max(12, drawingParams.lineWidth * fontMultiplayer));
         g2d.setFont(font);
 
         g2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
@@ -100,7 +102,7 @@ public class TextTool implements Tool {
         Graphics2D g2d = (Graphics2D) g;
         g2d.setColor(drawingParams.drawingColor);
 
-        Font font = new Font("SansSerif", Font.PLAIN, Math.max(12, drawingParams.lineWidth * 12));
+        Font font = new Font("SansSerif", Font.PLAIN, Math.max(12, drawingParams.lineWidth * fontMultiplayer));
         g2d.setFont(font);
 
         g2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);

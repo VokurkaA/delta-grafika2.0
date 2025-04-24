@@ -2,6 +2,7 @@ package rasterizers;
 
 import models.drawable.shape.Line;
 import models.drawable.shape.Shape;
+import utils.SettingsManager;
 
 import java.awt.*;
 
@@ -28,7 +29,8 @@ public class DashedLineRasterizer implements Rasterizer {
         float y = line.getA().getY();
 
         boolean isDrawingSolid = true;
-        int dashedLength = Math.max(5, shape.thickness * 5);
+        int dashLength = SettingsManager.getInt("tools.line.dashedLength", 5);
+        int dashedLength = Math.max(5, shape.thickness * dashLength);
 
         for (int i = 0; i < step; i++) {
             if (i % dashedLength == 0) {

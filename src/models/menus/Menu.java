@@ -1,13 +1,15 @@
 package models.menus;
 
+import utils.SettingsManager;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
 
 public abstract class Menu {
-    protected static final int BUTTON_SIZE = 50;
-    protected static final Color BUTTON_COLOR = new Color(220, 220, 220);
-    protected static final Font BUTTON_FONT = new Font("Arial", Font.PLAIN, 14);
+    protected static final int BUTTON_SIZE = SettingsManager.getInt("ui.buttonSize", 50);
+    protected static final Color BUTTON_COLOR = SettingsManager.getColor("ui.buttonColor", new Color(220, 220, 220));
+    protected static final Font BUTTON_FONT = SettingsManager.getFont("ui", new Font("Arial", Font.PLAIN, 14));
 
     public abstract JPopupMenu createPopupMenu(String title, Object[] items, ActionListener listener);
 

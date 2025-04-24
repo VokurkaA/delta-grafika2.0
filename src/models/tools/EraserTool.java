@@ -5,6 +5,7 @@ import models.Canvas;
 import models.DrawingParams;
 import models.drawable.Point;
 import models.drawable.shape.Line;
+import utils.SettingsManager;
 
 import java.awt.*;
 import java.awt.event.KeyEvent;
@@ -19,7 +20,8 @@ public class EraserTool implements Tool {
         Graphics2D g2d = canvas.getFillLayer().createGraphics();
         g2d.setComposite(AlphaComposite.Clear);
 
-        int eraserSize = drawingParams.lineWidth * 2;
+        int eraserMultiplayer = SettingsManager.getInt("tools.eraser.sizeMultiplier", 2);
+        int eraserSize = drawingParams.lineWidth * eraserMultiplayer;
         int x = lastPoint.getX() - eraserSize / 2;
         int y = lastPoint.getY() - eraserSize / 2;
         g2d.fillOval(x, y, eraserSize, eraserSize);

@@ -6,6 +6,7 @@ import enums.LineType;
 import models.drawable.shape.Shape;
 import models.factory.ToolFactory;
 import models.tools.Tool;
+import utils.SettingsManager;
 
 import java.awt.*;
 
@@ -19,13 +20,13 @@ public class DrawingParams {
     public Tool drawingTool;
 
 
-    public DrawingParams(boolean doAlignLine, LineType lineType, DrawingShape drawingShape, int lineWidth, Color drawingColor, DrawingTool drawingTool) {
-        this.doAlignLine = doAlignLine;
-        this.lineType = lineType;
-        this.drawingShape = drawingShape;
+    public DrawingParams() {
+        this.doAlignLine = false;
+        this.lineType = LineType.valueOf(SettingsManager.getString("drawing.defaultLineType", "solid"));
+        this.drawingShape = DrawingShape.valueOf(SettingsManager.getString("drawing.defaultShape", "polygon"));
         this.movingShape = null;
-        this.lineWidth = lineWidth;
-        this.drawingColor = drawingColor;
-        this.drawingTool = ToolFactory.getToolByEnum(drawingTool);
+        this.lineWidth = SettingsManager.getInt("drawing.defaultLineWidth", 1);
+        this.drawingColor = SettingsManager.getColor("drawing.defaultColor", Color.RED);
+        this.drawingTool = ToolFactory.getToolByEnum(DrawingTool.valueOf(SettingsManager.getString("drawing.defaultTool", "pen")));
     }
 }

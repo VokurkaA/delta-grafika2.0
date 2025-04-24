@@ -3,6 +3,7 @@ package rasterizers;
 import models.drawable.Point;
 import models.drawable.shape.Circle;
 import models.drawable.shape.Shape;
+import utils.SettingsManager;
 
 import java.awt.*;
 
@@ -25,7 +26,7 @@ public class DottedCircleRasterizer implements Rasterizer {
         g.fillRect(centerX, centerY, 1, 1);
 
         int P = 1 - (int) radius;
-        int dotSpacing = Math.max(2, shape.thickness * 2);
+        int dotSpacing = Math.max(2, shape.thickness * SettingsManager.getInt("tools.circle.dottedSpacing", 2));
         int stepCounter = 0;
 
         while (x > y) {

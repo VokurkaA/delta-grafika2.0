@@ -3,6 +3,7 @@ package rasterizers;
 import models.drawable.Point;
 import models.drawable.shape.Circle;
 import models.drawable.shape.Shape;
+import utils.SettingsManager;
 
 import java.awt.*;
 
@@ -26,7 +27,8 @@ public class DashedCircleRasterizer implements Rasterizer {
         g.fillRect(centerX, centerY, 1, 1);
 
         int P = 1 - (int) radius;
-        int dashLength = Math.max(5, shape.thickness * 4);
+
+        int dashLength = Math.max(5, shape.thickness * SettingsManager.getInt("tools.circle.dashedLength", 5));
         int totalCounter = 0;
 
         while (x > y) {
