@@ -34,6 +34,16 @@ public class Rectangle extends Polygon {
     @Override
     public void move(Point click, DrawingParams drawingParams, boolean newPoint) {
         lineType = drawingParams.lineType;
+        color = drawingParams.drawingColor;
+        thickness = drawingParams.lineWidth;
+
+        if (!isFinished) {
+            Point first = points.getFirst();
+            points.set(1, new Point(click.getX(), first.getY()));
+            points.set(2, new Point(click.getX(), click.getY()));
+            points.set(3, new Point(first.getX(), click.getY()));
+            return;
+        }
 
         if (newPoint) {
             movePointIndex = points.indexOf(getNearestPoint(click));
@@ -48,23 +58,24 @@ public class Rectangle extends Polygon {
         movePoint.set(new Point(movePoint.getX() + deltaX, movePoint.getY() + deltaY));
 
         if (movePointIndex == 0) {
-            points.set(1, new Point(points.get(0).getX() + deltaX, points.get(0).getY()));
-            points.set(2, new Point(points.get(0).getX() + deltaX, points.get(0).getY() + deltaY));
-            points.set(3, new Point(points.get(0).getX(), points.get(0).getY() + deltaY));
+            points.set(1, new Point(points.get(1).getX(), points.get(0).getY()));
+            points.set(2, new Point(points.get(1).getX(), points.get(3).getY()));
+            points.set(3, new Point(points.get(0).getX(), points.get(3).getY()));
         } else if (movePointIndex == 1) {
-            points.set(0, new Point(points.get(1).getX() - deltaX, points.get(1).getY()));
-            points.set(2, new Point(points.get(1).getX() - deltaX, points.get(1).getY() + deltaY));
-            points.set(3, new Point(points.get(1).getX(), points.get(1).getY() + deltaY));
+            points.set(0, new Point(points.get(0).getX(), points.get(1).getY()));
+            points.set(2, new Point(points.get(1).getX(), points.get(3).getY()));
+            points.set(3, new Point(points.get(0).getX(), points.get(3).getY()));
         } else if (movePointIndex == 2) {
-            points.set(1, new Point(points.get(2).getX() - deltaX, points.get(2).getY()));
-            points.set(0, new Point(points.get(2).getX() - deltaX, points.get(2).getY() - deltaY));
-            points.set(3, new Point(points.get(2).getX(), points.get(2).getY() - deltaY));
+            points.set(1, new Point(points.get(2).getX(), points.get(0).getY()));
+            points.set(0, new Point(points.get(0).getX(), points.get(0).getY()));
+            points.set(3, new Point(points.get(0).getX(), points.get(2).getY()));
         } else if (movePointIndex == 3) {
-            points.set(1, new Point(points.get(3).getX() + deltaX, points.get(3).getY()));
-            points.set(2, new Point(points.get(3).getX() + deltaX, points.get(3).getY() - deltaY));
-            points.set(0, new Point(points.get(3).getX(), points.get(3).getY() - deltaY));
+            points.set(0, new Point(points.get(0).getX(), points.get(0).getY()));
+            points.set(1, new Point(points.get(2).getX(), points.get(0).getY()));
+            points.set(2, new Point(points.get(2).getX(), points.get(3).getY()));
         }
     }
+
 
     @Override
     public void rasterize(Graphics g) {

@@ -57,6 +57,17 @@ public class Line extends Shape {
     @Override
     public void move(Point click, DrawingParams drawingParams, boolean newPoint) {
         lineType = drawingParams.lineType;
+        color = drawingParams.drawingColor;
+        thickness = drawingParams.lineWidth;
+
+        if (!isFinished) {
+            if (drawingParams.doAlignLine) {
+                setB(Line.alignPoint(getA(), click));
+            } else {
+                setB(click);
+            }
+            return;
+        }
 
         Point nearestPoint = (Point.getDistance(getA(), click) <= Point.getDistance(getB(), click)) ? getA() : getB();
 

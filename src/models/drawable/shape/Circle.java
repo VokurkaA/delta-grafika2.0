@@ -25,6 +25,13 @@ public class Circle extends Shape {
     @Override
     public void move(Point click, DrawingParams drawingParams, boolean newPoint) {
         lineType = drawingParams.lineType;
+        color = drawingParams.drawingColor;
+        thickness = drawingParams.lineWidth;
+
+        if (!isFinished) {
+            points.get(1).set(click);
+            return;
+        }
 
         Point centerPoint = points.getFirst();
         Point radiusPoint = points.get(1);

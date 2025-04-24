@@ -45,6 +45,20 @@ public class Polygon extends Shape {
     @Override
     public void move(Point click, DrawingParams drawingParams, boolean newPoint) {
         lineType = drawingParams.lineType;
+        color = drawingParams.drawingColor;
+        thickness = drawingParams.lineWidth;
+
+        if (!isFinished) {
+            if (points.size() >= 2) {
+                if (drawingParams.doAlignLine) {
+                    Point previousPoint = points.get(points.size() - 2);
+                    points.getLast().set(Line.alignPoint(previousPoint, click));
+                } else {
+                    points.getLast().set(click);
+                }
+            }
+            return;
+        }
 
         if (newPoint) {
             if (points.isEmpty()) return;

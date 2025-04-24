@@ -4,7 +4,6 @@ import enums.LineType;
 import models.Canvas;
 import models.DrawingParams;
 import models.drawable.Point;
-import models.drawable.shape.Line;
 import models.drawable.shape.Shape;
 import models.factory.ShapeFactory;
 
@@ -36,11 +35,9 @@ public class Main {
                 }
 
                 Shape shape = canvas.getLastShape();
-                if (shape == null || shape.isFinished) {
+                if (shape == null || shape.isFinished)
                     canvas.addShape(ShapeFactory.getShapeByEnum(drawingParams.drawingShape, newPoint, drawingParams));
-                } else {
-                    shape.place(newPoint, drawingParams.doAlignLine);
-                }
+                else shape.place(newPoint, drawingParams.doAlignLine);
                 canvas.repaint();
             }
 
@@ -51,9 +48,7 @@ public class Main {
                         drawingParams.movingShape = shapeToMove;
                         shapeToMove.move(newPoint, drawingParams, true);
                     }
-                } else {
-                    drawingParams.movingShape = null;
-                }
+                } else drawingParams.movingShape = null;
             }
 
             @Override
@@ -61,18 +56,9 @@ public class Main {
                 Point newPoint = new Point(e.getX(), e.getY());
                 Shape latestShape = canvas.getLastShape();
 
-                if (drawingParams.movingShape != null) {
-                    drawingParams.movingShape.move(newPoint, drawingParams, false);
-                } else if (latestShape != null && !latestShape.isFinished) {
-                    latestShape.lineType = drawingParams.lineType;
-                    latestShape.color = drawingParams.drawingColor;
-                    latestShape.thickness = drawingParams.lineWidth;
-                    if (drawingParams.doAlignLine && latestShape.points.size() >= 2) {
-                        Point previousPoint = latestShape.points.get(latestShape.points.size() - 2);
-                        newPoint = Line.alignPoint(previousPoint, newPoint);
-                    }
-                    latestShape.points.set(latestShape.points.size() - 1, newPoint);
-                }
+                if (drawingParams.movingShape != null) drawingParams.movingShape.move(newPoint, drawingParams, false);
+                else if (latestShape != null && !latestShape.isFinished)
+                    latestShape.move(newPoint, drawingParams, false);
                 canvas.repaint();
             }
         };
