@@ -5,4 +5,5 @@ public enum DrawingTool {
     bucket,
     shape,
     rasterizer,
+    moveTool
 }

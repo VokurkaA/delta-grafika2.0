@@ -28,6 +28,11 @@ public class Main {
                 else if (SwingUtilities.isRightMouseButton(e)) handleRightMousePress(canvas, newPoint, drawingParams);
             }
 
+            @Override
+            public void mouseDragged(MouseEvent e) {
+                super.mouseDragged(e);
+            }
+
             private void handleLeftMousePress(Canvas canvas, Point newPoint, DrawingParams drawingParams) {
                 if (drawingParams.movingShape != null) {
                     drawingParams.movingShape = null;
