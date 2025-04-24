@@ -2,6 +2,9 @@ package models;
 
 import enums.*;
 import models.factory.MenuFactory;
+import models.factory.ToolFactory;
+import models.tools.ShapeTool;
+import models.tools.Tool;
 
 import javax.swing.*;
 import java.awt.*;
@@ -23,35 +26,29 @@ public class ToolBar extends JToolBar {
         }));
 
         add(MenuFactory.createMenu("Tools", DrawingTool.values(), MenuType.generic, true, e -> {
-            DrawingTool selectedTool = DrawingTool.valueOf(e.getActionCommand());
-            drawingParams.drawingTool = selectedTool;
-            drawingParams.drawingShape = null;
+            drawingParams.drawingTool = ToolFactory.getToolByEnum(DrawingTool.valueOf(e.getActionCommand()));
             drawingParams.movingShape = null;
             System.out.println("Tool selected: " + e.getActionCommand());
 
-            updateButtonVisibility(selectedTool);
+            updateButtonVisibility(drawingParams.drawingTool);
         }));
 
-        JButton shapesButton = MenuFactory.createMenu("Shapes", DrawingShape.values(), MenuType.generic, drawingParams.drawingTool == DrawingTool.shape, e -> {
-            changeShape.accept(DrawingShape.valueOf(e.getActionCommand()));
-        });
+        JButton shapesButton = MenuFactory.createMenu("Shapes", DrawingShape.values(), MenuType.generic, (drawingParams.drawingTool instanceof ShapeTool), e -> changeShape.accept(DrawingShape.valueOf(e.getActionCommand())));
         toolButtons.put("Shapes", shapesButton);
         add(shapesButton);
 
-        JButton lineButton = MenuFactory.createMenu("Line", LineType.values(), MenuType.generic, drawingParams.drawingTool == DrawingTool.shape, e -> {
-            drawingParams.lineType = LineType.valueOf(e.getActionCommand());
-        });
+        JButton lineButton = MenuFactory.createMenu("Line", LineType.values(), MenuType.generic, (drawingParams.drawingTool instanceof ShapeTool), e -> drawingParams.lineType = LineType.valueOf(e.getActionCommand()));
         toolButtons.put("Line", lineButton);
         add(lineButton);
 
-        JButton thicknessButton = MenuFactory.createMenu("Thickness", MenuType.slider, 1, 10, drawingParams.lineWidth, drawingParams.drawingTool == DrawingTool.shape, e -> {
+        JButton thicknessButton = MenuFactory.createMenu("Thickness", MenuType.slider, 1, 10, drawingParams.lineWidth, true, e -> {
             drawingParams.lineWidth = Integer.parseInt(e.getActionCommand());
             System.out.println("Thickness selected: " + drawingParams.lineWidth);
         });
         toolButtons.put("Thickness", thicknessButton);
         add(thicknessButton);
 
-        JButton colorButton = MenuFactory.createMenu("Color", MenuType.color, drawingParams.drawingTool == DrawingTool.shape, e -> {
+        JButton colorButton = MenuFactory.createMenu("Color", MenuType.color, true, e -> {
             Color selectedColor = new Color(Integer.parseInt(e.getActionCommand()));
             drawingParams.drawingColor = selectedColor;
             System.out.println("Color chosen: " + selectedColor);
@@ -62,8 +59,8 @@ public class ToolBar extends JToolBar {
         updateButtonVisibility(drawingParams.drawingTool);
     }
 
-    private void updateButtonVisibility(DrawingTool selectedTool) {
-        boolean showShapeButtons = (selectedTool == DrawingTool.shape);
+    private void updateButtonVisibility(Tool selectedTool) {
+        boolean showShapeButtons = (selectedTool instanceof ShapeTool);
 
         toolButtons.get("Shapes").setVisible(showShapeButtons);
         toolButtons.get("Line").setVisible(showShapeButtons);

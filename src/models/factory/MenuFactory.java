@@ -89,7 +89,6 @@ public class MenuFactory {
         return popupMenu;
     }
 
-    // Modified method to accept min, max, and current values
     private static JPopupMenu createSliderMenu(String title, int min, int max, int current, ActionListener listener) {
         JPopupMenu popupMenu = new JPopupMenu();
 

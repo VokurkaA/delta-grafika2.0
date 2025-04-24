@@ -12,11 +12,11 @@ public class ShapeFactory {
     private static final EnumMap<DrawingShape, ShapeCreator> shapeMap = new EnumMap<>(DrawingShape.class);
 
     static {
-        shapeMap.put(DrawingShape.line, (p, params) -> new Line(p, params));
-        shapeMap.put(DrawingShape.polygon, (p, params) -> new Polygon(p, params));
-        shapeMap.put(DrawingShape.circle, (p, params) -> new Circle(p, params));
-        shapeMap.put(DrawingShape.rectangle, (p, params) -> new Rectangle(p, params));
-        shapeMap.put(DrawingShape.square, (p, params) -> new Square(p, params));
+        shapeMap.put(DrawingShape.line, Line::new);
+        shapeMap.put(DrawingShape.polygon, Polygon::new);
+        shapeMap.put(DrawingShape.circle, Circle::new);
+        shapeMap.put(DrawingShape.rectangle, Rectangle::new);
+        shapeMap.put(DrawingShape.square, Square::new);
     }
 
     public static Shape getShapeByEnum(DrawingShape drawingShape, Point startPoint, DrawingParams params) {

@@ -11,7 +11,6 @@ import java.util.List;
 
 public class Canvas extends JFrame {
     private final JPanel panel;
-    private final ToolBar toolBar;
     private final List<Shape> shapes = new ArrayList<>();
     private final DrawingParams drawingParams;
 
@@ -26,6 +25,7 @@ public class Canvas extends JFrame {
             protected void paintComponent(Graphics g) {
                 super.paintComponent(g);
                 for (Shape shape : shapes) {
+                    if (shape == null) break;
                     shape.rasterize(g);
                 }
             }
@@ -38,7 +38,7 @@ public class Canvas extends JFrame {
 
         this.drawingParams = drawingParams;
 
-        this.toolBar = new ToolBar(drawingParams, this::changeShape, this::clear);
+        ToolBar toolBar = new ToolBar(drawingParams, this::changeShape, this::clear);
         add(toolBar, BorderLayout.WEST);
         revalidate();
     }
