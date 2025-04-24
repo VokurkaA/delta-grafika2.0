@@ -3,10 +3,10 @@ package models.drawable.shape;
 import enums.LineType;
 import models.DrawingParams;
 import models.drawable.Point;
-import rasterizers.DashedLineRasterizer;
-import rasterizers.DottedLineRasterizer;
+import rasterizers.DashedCircleRasterizer;
+import rasterizers.DottedCircleRasterizer;
 import rasterizers.Rasterizer;
-import rasterizers.SimpleLineRasterizer;
+import rasterizers.SimpleCircleRasterizer;
 
 import java.awt.*;
 
@@ -60,10 +60,10 @@ public class Circle extends Shape {
 
     @Override
     public void rasterize(Graphics g) {
-        Rasterizer rasterizer = new SimpleLineRasterizer();
+        Rasterizer rasterizer = new SimpleCircleRasterizer();
         switch (lineType) {
-            case dashed -> rasterizer = new DashedLineRasterizer();
-            case dotted -> rasterizer = new DottedLineRasterizer();
+            case dashed -> rasterizer = new DashedCircleRasterizer();
+            case dotted -> rasterizer = new DottedCircleRasterizer();
         }
         rasterizer.rasterize(g, this);
     }
