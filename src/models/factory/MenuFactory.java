@@ -9,7 +9,7 @@ import models.menus.SliderMenu;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
-import java.util.Map;
+import java.util.*;
 
 public class MenuFactory {
 
@@ -22,20 +22,25 @@ public class MenuFactory {
     }
 
     private static void updateButtonVisibility(Map<String, JButton> buttonMap, String toolName) {
-        boolean isShapeTool = "shape".equals(toolName);
-        boolean isEraserTool = "eraser".equals(toolName);
+        String[] alwaysVisibleButtons = {"Canvas", "Tools"};
 
-        if (buttonMap.containsKey("Shapes")) {
-            buttonMap.get("Shapes").setVisible(isShapeTool);
+        HashMap<String, String[]> toolButtonWhitelist = new HashMap<>() {{
+            put("pen", new String[]{"Thickness", "Color"});
+            put("bucket", new String[]{"Color"});
+            put("shape", new String[]{"Shapes", "Line", "Thickness", "Color"});
+            put("text", new String[]{"Thickness", "Color"});
+            put("eraser", new String[]{"Thickness"});
+            put("rasterizer", new String[]{});
+            put("moveTool", new String[]{});
+        }};
+
+        Set<String> visibleButtons = new HashSet<>(Arrays.asList(alwaysVisibleButtons));
+
+        if (toolButtonWhitelist.containsKey(toolName)) {
+            visibleButtons.addAll(Arrays.asList(toolButtonWhitelist.get(toolName)));
         }
 
-        if (buttonMap.containsKey("Line")) {
-            buttonMap.get("Line").setVisible(isShapeTool);
-        }
-
-        if (buttonMap.containsKey("Color")) {
-            buttonMap.get("Color").setVisible(!isEraserTool);
-        }
+        buttonMap.forEach((key, button) -> button.setVisible(visibleButtons.contains(key)));
 
         SwingUtilities.invokeLater(() -> {
             if (!buttonMap.isEmpty()) {

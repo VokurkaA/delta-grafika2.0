@@ -15,7 +15,6 @@ import java.util.function.Consumer;
 
 public class ToolBar extends JToolBar {
     private static final int ICON_SIZE = 24;
-    private final Map<String, JButton> toolButtons = new HashMap<>();
 
     public ToolBar(DrawingParams drawingParams, Consumer<DrawingShape> changeShape, Runnable clearCanvas) {
         super(JToolBar.VERTICAL);
@@ -33,6 +32,7 @@ public class ToolBar extends JToolBar {
             }
         }));
 
+        Map<String, JButton> toolButtons = new HashMap<>();
         JButton toolsButton = MenuFactory.createToolSelectionButton("Tools", "Select a drawing tool", IconLoader.getIcon("tools", ICON_SIZE), DrawingTool.values(), MenuType.generic, true, e -> {
             drawingParams.drawingTool = ToolFactory.getToolByEnum(DrawingTool.valueOf(e.getActionCommand()));
             drawingParams.movingShape = null;
@@ -43,7 +43,7 @@ public class ToolBar extends JToolBar {
         toolButtons.put("Shapes", shapesButton);
         add(shapesButton);
 
-        JButton lineButton = MenuFactory.createMenu("Line", "Select line style", IconLoader.getIcon("line", ICON_SIZE), LineType.values(), MenuType.generic, (drawingParams.drawingTool instanceof ShapeTool), e -> drawingParams.lineType = LineType.valueOf(e.getActionCommand()));
+        JButton lineButton = MenuFactory.createMenu("Line", "Select line style", IconLoader.getIcon("line_style", ICON_SIZE), LineType.values(), MenuType.generic, (drawingParams.drawingTool instanceof ShapeTool), e -> drawingParams.lineType = LineType.valueOf(e.getActionCommand()));
         toolButtons.put("Line", lineButton);
         add(lineButton);
 
