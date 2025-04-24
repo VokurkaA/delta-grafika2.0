@@ -19,12 +19,13 @@ public class MenuFactory {
         menuMap.put(MenuType.color, (items, listener) -> createColorMenu(listener));
     }
 
-    public static JButton createMenu(String title, Enum<?>[] items, MenuType menuType, ActionListener listener) {
+    public static JButton createMenu(String title, Enum<?>[] items, MenuType menuType, boolean isVisible, ActionListener listener) {
         JButton button = new JButton(title);
         int size = 50;
         button.setPreferredSize(new Dimension(size, size));
         button.setBackground(new Color(220, 220, 220));
         button.setFont(new Font("Arial", Font.PLAIN, 14));
+        button.setVisible(isVisible);
 
         if (menuType == MenuType.color) {
             button.addActionListener(e -> {
@@ -44,13 +45,13 @@ public class MenuFactory {
         return button;
     }
 
-    public static JButton createMenu(String title, MenuType menuType, ActionListener listener) {
-        return createMenu(title, null, menuType, listener);
+    public static JButton createMenu(String title, MenuType menuType, boolean isVisible, ActionListener listener) {
+        return createMenu(title, null, menuType, isVisible, listener);
     }
 
-    public static JButton createMenu(String title, MenuType menuType, int min, int max, int current, ActionListener listener) {
+    public static JButton createMenu(String title, MenuType menuType, int min, int max, int current, boolean isVisible, ActionListener listener) {
         if (menuType != MenuType.slider) {
-            return createMenu(title, null, menuType, listener);
+            return createMenu(title, null, menuType, isVisible, listener);
         }
 
         JButton button = new JButton(title);
@@ -58,6 +59,7 @@ public class MenuFactory {
         button.setPreferredSize(new Dimension(size, size));
         button.setBackground(new Color(220, 220, 220));
         button.setFont(new Font("Arial", Font.PLAIN, 14));
+        button.setVisible(isVisible);
 
         button.addActionListener(e -> {
             JPopupMenu popupMenu = createSliderMenu(title, min, max, current, listener);
