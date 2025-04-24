@@ -44,6 +44,81 @@ public class MenuFactory {
         return button;
     }
 
+    public static JButton createMenuWithIcon(String title, Icon icon, Enum<?>[] items, MenuType menuType, boolean isVisible, ActionListener listener) {
+        JButton button = new JButton(title, icon);
+        setButtonDefaults(button, isVisible);
+
+        button.setVerticalTextPosition(SwingConstants.BOTTOM);
+        button.setHorizontalTextPosition(SwingConstants.CENTER);
+
+        if (menuType == MenuType.color) {
+            button.addActionListener(e -> {
+                Color selectedColor = JColorChooser.showDialog(button, "Choose a Color", Color.BLACK);
+                if (selectedColor != null) {
+                    ActionEvent event = new ActionEvent(button, ActionEvent.ACTION_PERFORMED, String.valueOf(selectedColor.getRGB()));
+                    listener.actionPerformed(event);
+                }
+            });
+        } else {
+            button.addActionListener(e -> {
+                JPopupMenu popupMenu = createPopupMenu(menuType, items, listener);
+                popupMenu.show(button, button.getWidth(), 0);
+            });
+        }
+
+        return button;
+    }
+
+    public static JButton createMenuWithIcon(String title, Icon icon, MenuType menuType, int min, int max, int initialValue, boolean isVisible, ActionListener listener) {
+        if (menuType != MenuType.slider) {
+            return createMenuWithIcon(title, icon, null, menuType, isVisible, listener);
+        }
+
+        final int[] currentValue = {initialValue};
+
+        JButton button = new JButton(title, icon);
+        setButtonDefaults(button, isVisible);
+
+        button.setVerticalTextPosition(SwingConstants.BOTTOM);
+        button.setHorizontalTextPosition(SwingConstants.CENTER);
+
+        button.addActionListener(e -> {
+            JPopupMenu popupMenu = createSliderMenu(title, min, max, currentValue[0], evt -> {
+                int newValue = Integer.parseInt(evt.getActionCommand());
+                currentValue[0] = newValue;
+                listener.actionPerformed(evt);
+            });
+            popupMenu.show(button, button.getWidth(), 0);
+        });
+
+        return button;
+    }
+
+    public static JButton createMenuWithIcon(String title, Icon icon, MenuType menuType, boolean isVisible, ActionListener listener) {
+        JButton button = new JButton(title, icon);
+        setButtonDefaults(button, isVisible);
+
+        button.setVerticalTextPosition(SwingConstants.BOTTOM);
+        button.setHorizontalTextPosition(SwingConstants.CENTER);
+
+        if (menuType == MenuType.color) {
+            button.addActionListener(e -> {
+                Color selectedColor = JColorChooser.showDialog(button, "Choose a Color", Color.BLACK);
+                if (selectedColor != null) {
+                    ActionEvent event = new ActionEvent(button, ActionEvent.ACTION_PERFORMED, String.valueOf(selectedColor.getRGB()));
+                    listener.actionPerformed(event);
+                }
+            });
+        } else {
+            button.addActionListener(e -> {
+                JPopupMenu popupMenu = createPopupMenu(menuType, null, listener);
+                popupMenu.show(button, button.getWidth(), 0);
+            });
+        }
+
+        return button;
+    }
+
     private static void setButtonDefaults(JButton button, boolean isVisible) {
         button.setPreferredSize(new Dimension(BUTTON_SIZE, BUTTON_SIZE));
         button.setMaximumSize(new Dimension(BUTTON_SIZE, BUTTON_SIZE));
@@ -52,6 +127,7 @@ public class MenuFactory {
         button.setBackground(BUTTON_COLOR);
         button.setFont(BUTTON_FONT);
         button.setVisible(isVisible);
+        button.setFocusable(false);
     }
 
     public static JButton createMenu(String title, MenuType menuType, boolean isVisible, ActionListener listener) {
