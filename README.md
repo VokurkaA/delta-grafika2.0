@@ -1,11 +1,5 @@
 # DELTA grafika
 
-## Overview
-
-DELTA grafika is a feature-rich Java drawing application that provides a digital canvas for creating and manipulating
-vector and raster graphics. It offers various drawing tools, shapes, and customization options in an intuitive user
-interface.
-
 ## Features
 
 ### Drawing Tools
@@ -29,8 +23,8 @@ interface.
 ### Line Styles
 
 - Solid lines
-- Dashed lines with customizable dash length
-- Dotted lines with customizable spacing
+- Dashed lines
+- Dotted lines
 
 ### Canvas Operations
 
@@ -107,6 +101,16 @@ interface.
 - `SettingsManager`: Loads and applies application settings
 - `CanvasSerializer`: Handles saving and loading of drawings
 
+Here's a new section for your README that clarifies how vector shapes interact with raster tools in DELTA grafika: 
+
+## Vector and Raster Tool Interaction
+
+- `Vector shapes` (created with the Shape Tool) are independent objects. They are not affected by raster-based tools like the Bucket Tool or Eraser.
+
+- `Raster tools` operate only on rasterized content. To apply raster effects to vector shapes, you must first convert them using the Rasterizer Tool.
+
+- `Rasterizer Tool` : This tool permanently converts vector shapes into raster graphics, making them editable with raster tools.
+
 ## Configuration
 
 The application can be customized through the `settings.json` file, which allows you to modify:
@@ -120,12 +124,3 @@ The application can be customized through the `settings.json` file, which allows
 
 - [Google Gson](https://github.com/google/gson): For JSON parsing and serialization
 - Java Swing and AWT: For UI components and graphics
-
-## License
-
-This project was created for educational purposes. See the zadani.md file for the original assignment requirements.
-
-## Contributing
-
-Contributions to improve DELTA grafika are welcome. Please feel free to submit pull requests or open issues for bugs and
-feature requests.
